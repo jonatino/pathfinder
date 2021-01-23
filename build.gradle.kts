@@ -29,3 +29,7 @@ tasks.withType<KotlinCompile> {
         freeCompilerArgs = listOf("-XXLanguage:+InlineClasses")
     }
 }
+
+jmh {
+    profilers = listOf("stack")
+}
