@@ -10,9 +10,10 @@ import java.util.LinkedList
 import kotlin.collections.ArrayList
 
 private const val DEFAULT_RESET_ON_SEARCH = true
-internal const val DEFAULT_SEARCH_MAP_SIZE = 144
+internal const val DEFAULT_SEARCH_MAP_SIZE = 148
 private const val DEFAULT_RING_BUFFER_SIZE = 4096
 private const val DEFAULT_MAX_TURNS = 24
+private const val DEFAULT_MAX_DISTANCE = 64
 
 private const val DEFAULT_DISTANCE_VALUE = 99999999
 private const val MAX_ALTERNATIVE_ROUTE_LOWEST_COST = 1000
@@ -29,7 +30,7 @@ private val TURN_COORDS = RouteCoordinates(0)
 
 public class SmartPathFinder(
     private val resetOnSearch: Boolean = DEFAULT_RESET_ON_SEARCH,
-    private val searchMapSize: Int = DEFAULT_SEARCH_MAP_SIZE,
+    public val searchMapSize: Int = DEFAULT_SEARCH_MAP_SIZE,
     private val ringBufferSize: Int = DEFAULT_RING_BUFFER_SIZE,
     private val directions: IntArray = IntArray(searchMapSize * searchMapSize),
     private val distances: IntArray = IntArray(searchMapSize * searchMapSize),
@@ -54,8 +55,9 @@ public class SmartPathFinder(
         objShape: Int = 0,
         accessBitMask: Int = 0,
         moveNear: Boolean = true,
+        maxDistance: Int = DEFAULT_MAX_DISTANCE,
         maxTurns: Int = DEFAULT_MAX_TURNS
-    ): List<RouteCoordinates> {
+    ): Route {
         require(clipFlags.size == directions.size) {
             "Clipping flag size must be same size as [directions] and [distances]"
         }
@@ -113,15 +115,15 @@ public class SmartPathFinder(
                 return Route(EMPTY_QUEUE, alternative = false, success = false)
             }
         }
-        val coordinates = ArrayList<RouteCoordinates>(bufWriterIndex)
+        val coordinates = ArrayList<RouteCoordinates>(255)
         var nextDir = directions[currentX, currentY]
         var currDir = -1
+        var turns = 0
         for (i in 0 until searchMapSize * searchMapSize) {
-            if (currentX == localSrcX && currentY == localSrcY) {
-                break
-            }
+            if (currentX == localSrcX && currentY == localSrcY) break
             val coords = RouteCoordinates(currentX + baseX, currentY + baseY)
             if (currDir != nextDir) {
+                turns++
                 coordinates.add(0, TURN_COORDS)
                 currDir = nextDir
             }
@@ -138,21 +140,31 @@ public class SmartPathFinder(
             }
             nextDir = directions[currentX, currentY]
         }
-        val turns = coordinates.count { it == TURN_COORDS }
         return if (turns > maxTurns) {
-            val filtered = mutableListOf<RouteCoordinates>()
+            val filtered = ArrayList<RouteCoordinates>(coordinates.size - turns)
             var currTurns = 0
-            for (coords in coordinates) {
+            for (i in coordinates.indices) {
+                val coords = coordinates[i]
                 if (currTurns > maxTurns) break
                 if (coords == TURN_COORDS) {
                     currTurns++
                     continue
                 }
-                filtered.add(coords)
+                if (isWithinDistance(srcX, srcY, coords.x, coords.y, maxDistance)) {
+                    filtered.add(coords)
+                }
             }
             Route(filtered, alternative = !pathFound, success = true)
         } else {
-            Route(coordinates.filter { it != TURN_COORDS }, alternative = !pathFound, success = true)
+            val filtered = ArrayList<RouteCoordinates>(coordinates.size - turns)
+            for (i in coordinates.indices) {
+                val coords = coordinates[i]
+                if (coords == TURN_COORDS) continue
+                if (isWithinDistance(srcX, srcY, coords.x, coords.y, maxDistance)) {
+                    filtered.add(coords)
+                }
+            }
+            Route(filtered, alternative = !pathFound, success = true)
         }
     }
 
@@ -746,13 +758,23 @@ public class SmartPathFinder(
         bufWriterIndex = (bufWriterIndex + 1) and (ringBufferSize - 1)
     }
 
-    private operator fun IntArray.get(x: Int, y: Int): Int {
+    @Suppress("NOTHING_TO_INLINE")
+    private inline operator fun IntArray.get(x: Int, y: Int): Int {
         val index = (y * searchMapSize) + x
         return this[index]
     }
 
-    private operator fun IntArray.set(x: Int, y: Int, value: Int) {
+    @Suppress("NOTHING_TO_INLINE")
+    private inline operator fun IntArray.set(x: Int, y: Int, value: Int) {
         val index = (y * searchMapSize) + x
         this[index] = value
     }
+}
+
+private fun isWithinDistance(srcX: Int, srcY: Int, destX: Int, destY: Int, radius: Int): Boolean {
+    val x1 = destX - radius
+    val y1 = destY - radius
+    val x2 = destX + radius
+    val y2 = destY + radius
+    return srcX in x1..x2 && srcY in y1..y2
 }
