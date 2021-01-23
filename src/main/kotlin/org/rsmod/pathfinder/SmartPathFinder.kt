@@ -52,7 +52,7 @@ public class SmartPathFinder(
         destHeight: Int = 0,
         srcSize: Int = 1,
         objRot: Int = 0,
-        objShape: Int = 0,
+        objShape: Int = -1,
         accessBitMask: Int = 0,
         moveNear: Boolean = true,
         maxDistance: Int = DEFAULT_MAX_DISTANCE,
