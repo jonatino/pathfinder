@@ -718,31 +718,14 @@ public class SmartPathFinder(
         if (srcX == destX && srcY == destY) {
             return true
         }
-        if (shape != 0) {
-            if ((shape < 5 || shape == 10)
-                && reachWall(clipFlags, searchMapSize, srcX, srcY, destX, destY, srcSize, shape - 1, rotation)
-            ) {
-                return true
-            }
-            if (shape < 10
-                && reachWallDeco(clipFlags, searchMapSize, srcX, srcY, destX, destY, srcSize, shape - 1, rotation)
-            ) {
-                return true
-            }
+        return when (shape.exitStrategy) {
+            0 -> reachWall(clipFlags, searchMapSize, srcX, srcY, destX, destY, srcSize, shape - 1, rotation)
+            1 -> reachWallDeco(clipFlags, searchMapSize, srcX, srcY, destX, destY, srcSize, shape - 1, rotation)
+            2 -> reachRectangle(
+                clipFlags, searchMapSize, accessBitMask, srcX, srcY, destX, destY, srcSize, destWidth, destHeight
+            )
+            else -> false
         }
-        return destWidth != 0 && destHeight != 0
-            && reachRectangle(
-            clipFlags,
-            searchMapSize,
-            accessBitMask,
-            srcX,
-            srcY,
-            destX,
-            destY,
-            srcSize,
-            destWidth,
-            destHeight
-        )
     }
 
     private fun reset() {
@@ -769,6 +752,15 @@ public class SmartPathFinder(
         val index = (y * searchMapSize) + x
         this[index] = value
     }
+
+    private val Int.exitStrategy: Int
+        get() = when {
+            this == -1 -> 3
+            this in 0..3 || this == 9 -> 0
+            this < 9 -> 1
+            this in 10..11 || this == 22 -> 2
+            else -> 3
+        }
 }
 
 private fun isWithinDistance(srcX: Int, srcY: Int, destX: Int, destY: Int, radius: Int): Boolean {
