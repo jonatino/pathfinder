@@ -60,10 +60,19 @@ abstract class GameClickBenchmark(private val parameterResourceName: String) {
     }
 
     @Benchmark
-    fun serverPath() {
+    fun serverPathConstructOnIteration() {
         val (iterations, srcX, srcY, destX, destY, clipFlags) = params
         repeat(iterations) {
             val pf = SmartPathFinder(resetOnSearch = false)
+            pf.findPath(clipFlags, srcX, srcY, destX, destY)
+        }
+    }
+
+    @Benchmark
+    fun serverPathResetOnIteration() {
+        val (iterations, srcX, srcY, destX, destY, clipFlags) = params
+        val pf = SmartPathFinder(resetOnSearch = true)
+        repeat(iterations) {
             pf.findPath(clipFlags, srcX, srcY, destX, destY)
         }
     }
