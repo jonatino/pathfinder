@@ -3,6 +3,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val ossrhUsername: String? by ext
 val ossrhPassword: String? by ext
 
+group = "org.rsmod"
+version = "1.0.0"
 description = "A breadth-first search path finder"
 
 plugins {
