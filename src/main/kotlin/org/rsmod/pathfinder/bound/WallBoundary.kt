@@ -64,10 +64,10 @@ private fun reachWall1(
                     if (srcX == destX && srcY == destY - 1)
                         return true
                     if (srcX == destX - 1 && srcY == destY
-                        && (flag(clipFlags, mapSize, srcX, srcY) and 0x12c0120) == 0
+                        && (flag(clipFlags, mapSize, srcX, srcY) and 0x12c0108) == 0
                     ) return true
                     if (srcX == destX + 1 && srcY == destY
-                        && (flag(clipFlags, mapSize, srcX, srcY) and 0x12c0102) == 0
+                        && (flag(clipFlags, mapSize, srcX, srcY) and 0x12c0180) == 0
                     ) return true
                 }
             }

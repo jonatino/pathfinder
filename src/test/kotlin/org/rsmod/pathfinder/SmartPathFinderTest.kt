@@ -45,15 +45,27 @@ class SmartPathFinderTest {
     }
 
     @Test
-    fun trimMaxDistance() {
-        val maxDistance = 16
+    fun trimMaxDistanceUpperBound() {
         val pf = SmartPathFinder()
         val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
-        val src = RouteCoordinates(0, 0)
-        val dest = RouteCoordinates(maxDistance + 1, 0)
-        val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y, maxDistance = maxDistance)
-        Assertions.assertEquals(maxDistance, route.last().x)
-        Assertions.assertEquals(0, route.last().y)
+        val maxDistance = (DEFAULT_SEARCH_MAP_SIZE / 2)
+        val src = RouteCoordinates(3200, 3200)
+        val dest = src.translateX(maxDistance)
+        val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y)
+        Assertions.assertEquals(src.x + maxDistance - 1, route.last().x)
+        Assertions.assertEquals(dest.y, route.last().y)
+    }
+
+    @Test
+    fun trimMaxDistanceLowerBound() {
+        val pf = SmartPathFinder()
+        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
+        val maxDistance = (DEFAULT_SEARCH_MAP_SIZE / 2)
+        val src = RouteCoordinates(3200, 3200)
+        val dest = src.translateX(-(maxDistance + 1))
+        val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y)
+        Assertions.assertEquals(src.x + -maxDistance, route.last().x)
+        Assertions.assertEquals(dest.y, route.last().y)
     }
 
     @ParameterizedTest

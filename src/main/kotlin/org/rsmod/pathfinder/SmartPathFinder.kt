@@ -8,17 +8,23 @@ import org.rsmod.pathfinder.flag.DirectionFlag
 import java.util.Arrays
 import java.util.LinkedList
 import kotlin.collections.ArrayList
+import kotlin.math.abs
 
 private const val DEFAULT_RESET_ON_SEARCH = true
-internal const val DEFAULT_SEARCH_MAP_SIZE = 148
+internal const val DEFAULT_SEARCH_MAP_SIZE = 128
 private const val DEFAULT_RING_BUFFER_SIZE = 4096
 private const val DEFAULT_MAX_TURNS = 24
-private const val DEFAULT_MAX_DISTANCE = 64
 
 private const val DEFAULT_DISTANCE_VALUE = 99999999
+private const val DEFAULT_SRC_DIRECTION_VALUE = 99
 private const val MAX_ALTERNATIVE_ROUTE_LOWEST_COST = 1000
 private const val MAX_ALTERNATIVE_ROUTE_SEEK_RANGE = 100
 private const val MAX_ALTERNATIVE_ROUTE_DISTANCE_FROM_DESTINATION = 10
+
+private const val WALL_STRATEGY = 0
+private const val WALL_DECO_STRATEGY = 1
+private const val RECTANGLE_STRATEGY = 2
+private const val NO_STRATEGY = 3
 
 private val EMPTY_QUEUE = LinkedList<RouteCoordinates>()
 
@@ -55,7 +61,6 @@ public class SmartPathFinder(
         objShape: Int = -1,
         accessBitMask: Int = 0,
         moveNear: Boolean = true,
-        maxDistance: Int = DEFAULT_MAX_DISTANCE,
         maxTurns: Int = DEFAULT_MAX_TURNS
     ): Route {
         require(clipFlags.size == directions.size) {
@@ -70,7 +75,7 @@ public class SmartPathFinder(
         val localSrcY = srcY - baseY
         val localDestX = destX - baseX
         val localDestY = destY - baseY
-        directions[localSrcX, localSrcY] = 99
+        directions[localSrcX, localSrcY] = DEFAULT_SRC_DIRECTION_VALUE
         distances[localSrcX, localSrcY] = 0
         setAndIncrementWriterBuf(localSrcX, localSrcY)
         val pathFound = when (srcSize) {
@@ -111,7 +116,7 @@ public class SmartPathFinder(
         if (!pathFound) {
             if (!moveNear) {
                 return Route(EMPTY_QUEUE, alternative = false, success = false)
-            } else if (!findClosestApproachPoint(localSrcX, localSrcY, localDestX, localDestY, destWidth, destHeight)) {
+            } else if (!findClosestApproachPoint(localSrcX, localSrcY, localDestX, localDestY)) {
                 return Route(EMPTY_QUEUE, alternative = false, success = false)
             }
         }
@@ -143,26 +148,20 @@ public class SmartPathFinder(
         return if (turns > maxTurns) {
             val filtered = ArrayList<RouteCoordinates>(coordinates.size - turns)
             var currTurns = 0
-            for (i in coordinates.indices) {
-                val coords = coordinates[i]
+            for (coords in coordinates) {
                 if (currTurns > maxTurns) break
                 if (coords == TURN_COORDS) {
                     currTurns++
                     continue
                 }
-                if (isWithinDistance(srcX, srcY, coords.x, coords.y, maxDistance)) {
-                    filtered.add(coords)
-                }
+                filtered.add(coords)
             }
             Route(filtered, alternative = !pathFound, success = true)
         } else {
             val filtered = ArrayList<RouteCoordinates>(coordinates.size - turns)
-            for (i in coordinates.indices) {
-                val coords = coordinates[i]
-                if (coords == TURN_COORDS) continue
-                if (isWithinDistance(srcX, srcY, coords.x, coords.y, maxDistance)) {
-                    filtered.add(coords)
-                }
+            coordinates.forEach { coords ->
+                if (coords == TURN_COORDS) return@forEach
+                filtered.add(coords)
             }
             Route(filtered, alternative = !pathFound, success = true)
         }
@@ -663,9 +662,7 @@ public class SmartPathFinder(
         srcX: Int,
         srcY: Int,
         destX: Int,
-        destY: Int,
-        destWidth: Int,
-        destHeight: Int
+        destY: Int
     ): Boolean {
         var lowestCost = MAX_ALTERNATIVE_ROUTE_LOWEST_COST
         var maxAlternativePath = MAX_ALTERNATIVE_ROUTE_SEEK_RANGE
@@ -680,16 +677,8 @@ public class SmartPathFinder(
                 ) {
                     continue
                 }
-                val dx = when {
-                    destX > x -> destX - x
-                    destWidth + destX - 1 < x -> x + 1 - destX - destWidth
-                    else -> 0
-                }
-                val dy = when {
-                    destY > y -> destY - y
-                    destHeight + destY - 1 < y -> x + 1 - destY - destHeight
-                    else -> 0
-                }
+                val dx = abs(destX - x)
+                val dy = abs(destY - y)
                 val cost = dx * dx + dy * dy
                 if (cost < lowestCost || (cost == lowestCost && maxAlternativePath > distances[x, y])) {
                     currentX = x
@@ -719,9 +708,9 @@ public class SmartPathFinder(
             return true
         }
         return when (shape.exitStrategy) {
-            0 -> reachWall(clipFlags, searchMapSize, srcX, srcY, destX, destY, srcSize, shape - 1, rotation)
-            1 -> reachWallDeco(clipFlags, searchMapSize, srcX, srcY, destX, destY, srcSize, shape - 1, rotation)
-            2 -> reachRectangle(
+            WALL_STRATEGY -> reachWall(clipFlags, searchMapSize, srcX, srcY, destX, destY, srcSize, shape, rotation)
+            WALL_DECO_STRATEGY -> reachWallDeco(clipFlags, searchMapSize, srcX, srcY, destX, destY, srcSize, shape, rotation)
+            RECTANGLE_STRATEGY -> reachRectangle(
                 clipFlags, searchMapSize, accessBitMask, srcX, srcY, destX, destY, srcSize, destWidth, destHeight
             )
             else -> false
@@ -755,18 +744,10 @@ public class SmartPathFinder(
 
     private val Int.exitStrategy: Int
         get() = when {
-            this == -1 -> 3
-            this in 0..3 || this == 9 -> 0
-            this < 9 -> 1
-            this in 10..11 || this == 22 -> 2
-            else -> 3
+            this == -1 -> NO_STRATEGY
+            this in 0..3 || this == 9 -> WALL_STRATEGY
+            this < 9 -> WALL_DECO_STRATEGY
+            this in 10..11 || this == 22 -> RECTANGLE_STRATEGY
+            else -> NO_STRATEGY
         }
-}
-
-private fun isWithinDistance(srcX: Int, srcY: Int, destX: Int, destY: Int, radius: Int): Boolean {
-    val x1 = destX - radius
-    val y1 = destY - radius
-    val x2 = destX + radius
-    val y2 = destY + radius
-    return srcX in x1..x2 && srcY in y1..y2
 }

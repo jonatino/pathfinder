@@ -6,7 +6,7 @@ package org.rsmod.pathfinder.benchmarks;
 @SuppressWarnings("unused")
 public class ClientPathfinder {
 
-    public static final int SIZE = 148;
+    public static final int SIZE = 128;
 
     public static int[][] directions = new int[SIZE][SIZE];
     public static int[][] distances = new int[SIZE][SIZE];

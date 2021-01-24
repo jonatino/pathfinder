@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit
 open class GameClickShortPath : GameClickBenchmark("short-path.json")
 open class GameClickMedPath : GameClickBenchmark("med-path.json")
 open class GameClickLongPath : GameClickBenchmark("long-path.json")
+open class GameClickOutOfBoundPath : GameClickBenchmark("outofbound-path.json")
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
@@ -36,7 +37,7 @@ abstract class GameClickBenchmark(private val parameterResourceName: String) {
         val mapper = ObjectMapper(JsonFactory())
         params = stream.use { mapper.readValue(it, PathFinderParameter::class.java) }
 
-        val mapSize = ClientPathfinder.SIZE;
+        val mapSize = ClientPathfinder.SIZE
         for (i in ClientPathfinder.scene.indices) {
             ClientPathfinder.scene[i] = ClientMapArea(mapSize, mapSize)
         }

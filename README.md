@@ -25,4 +25,3 @@ This project is available under the terms of the ISC license, which is similar t
 [license]: https://github.com/rsmod/pathfinder/blob/master/LICENSE.md
 [license-badge]: https://img.shields.io/badge/license-ISC-informational
 [bfs]: https://en.wikipedia.org/wiki/Breadth-first_search
-
