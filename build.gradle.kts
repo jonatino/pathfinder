@@ -10,7 +10,6 @@ plugins {
     signing
     kotlin("jvm") version "1.4.0"
     id("me.champeau.gradle.jmh") version "0.5.2"
-    id("net.researchgate.release") version "2.8.1"
 }
 
 repositories {
@@ -47,7 +46,7 @@ java {
 publishing {
     repositories {
         maven {
-            if (version.toString().endsWith("SNAPSHOT")) {
+            if (project.version.toString().endsWith("SNAPSHOT")) {
                 setUrl("https://oss.sonatype.org/content/repositories/snapshots")
             } else {
                 setUrl("https://oss.sonatype.org/service/local/staging/deploy/maven2")
@@ -59,29 +58,33 @@ publishing {
         }
     }
 
-    publications.withType<MavenPublication> {
-        pom {
-            name.set("RSMod PathFinder")
-            description.set(project.description)
-            url.set("https://github.com/rsmod/pathfinder")
-
-            licenses {
-                license {
-                    name.set("ISC License")
-                    url.set("https://opensource.org/licenses/ISC")
-                }
-            }
-
-            scm {
-                connection.set("scm:git:git://github.com/rsmod/pathfinder.git")
-                developerConnection.set("scm:git:git@github.com:github.com/rsmod/pathfinder.git")
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+            pom {
+                name.set("RSMod PathFinder")
+                description.set(project.description)
                 url.set("https://github.com/rsmod/pathfinder")
-            }
+                inceptionYear.set("2021")
 
-            developers {
-                developer {
-                    id.set("tom")
-                    name.set("Tomm")
+                licenses {
+                    license {
+                        name.set("ISC License")
+                        url.set("https://opensource.org/licenses/isc-license.txt")
+                    }
+                }
+
+                scm {
+                    connection.set("scm:git:git://github.com/rsmod/pathfinder.git")
+                    developerConnection.set("scm:git:git@github.com:github.com/rsmod/pathfinder.git")
+                    url.set("https://github.com/rsmod/pathfinder")
+                }
+
+                developers {
+                    developer {
+                        name.set("Tomm")
+                        url.set("https://github.com/Tomm0017")
+                    }
                 }
             }
         }
@@ -90,9 +93,5 @@ publishing {
 
 signing {
     useGpgCmd()
-    sign(publishing.publications)
-}
-
-tasks.afterReleaseBuild {
-    dependsOn(tasks.publish)
+    sign(publishing.publications["mavenJava"])
 }
