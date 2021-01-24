@@ -12,7 +12,7 @@ internal fun reachWallDeco(
     rot: Int
 ): Boolean = when {
     srcSize == 1 && srcX == destX && destY == srcY -> true
-    destX >= srcX && srcSize + srcX + -1 >= destX && srcSize + destY + -1 >= destY -> true
+    srcSize != 1 && destX >= srcX && srcSize + srcX + -1 >= destX && srcSize + destY + -1 >= destY -> true
     srcSize == 1 -> reachWallDeco1(clipFlags, mapSize, srcX, srcY, destX, destY, shape, rot)
     else -> reachWallDecoN(clipFlags, mapSize, srcX, srcY, destX, destY, srcSize, shape, rot)
 }
