@@ -49,11 +49,11 @@ fun clipFlags(centerX: Int, centerY: Int, level: Int, size: Int): IntArray {
 **Benchmark sources:** [org/rsmod/pathfinder/benchmarks/][benchmark]
 
 **Machine Specs**
-* **OS**: Windows 10 Pro (64-bit)
-* **CPU**: Intel Core i7-7700k @ 4.20GHz (4 cores)
-* **RAM**: 4 x 16GB DDR4-2132 (1066 MHz)
-* **JMH**: 1.25
-* **VM**: JDK 11.0.6, Java HotSpot(TM) 64-Bit Server VM, 11.0.6+8-LTS
+- **OS:** Windows 10 Pro (64-bit)
+- **CPU:** Intel Core i7-7700k @ 4.20GHz (4 cores)
+- **RAM:** 4 x 16GB DDR4-2132 (1066 MHz)
+- **JMH:** 1.25
+- **VM:** JDK 11.0.6, Java HotSpot(TM) 64-Bit Server VM, 11.0.6+8-LTS
 
     ### Smart Path Finder (BFS)
     Each benchmark calculates 2000 paths from short to out-of-bound (beyond search distance) destinations.
@@ -85,15 +85,15 @@ fun clipFlags(centerX: Int, centerY: Int, level: Int, size: Int): IntArray {
     GameClickShortPath.serverPathCoroutineDispatcherThreadLocal         avgt    3    2.065 ±   0.980  ms/op
     ```
     #### Glossary
-    * **GameClickAltPath**: destination outside of valid search distance (path finder force to iterate the whole search area) (~72 tiles).
-    * **GameClickLongPath**: destination near upper limit of `SmartPathFinder::searchMapSize` radius (~63 tiles).
-    * **GameClickMedPath**: destination about half of `SmartPathFinder::searchMapSize` radius (~32 tiles).
-    * **GameClickShortPath**: destination near lower limit of `SmartPathFinder::searchMapSize` radius (~8 tiles)
-    * **clientPath**: simple zero-allocation third-party implementation.
-    * **serverPathConstructOnIteration**: construct `SmartPathFinder` every iteration.
-    * **serverPathResetOnIteration**: reset values on `SmartPathFinder` to re-use every iteration.
-    * **serverPathCoroutineDispatcherConstruct**: similar to `serverPathConstructOnIteration`, but using coroutines for each iteration.
-    * **serverPathCoroutineDispatcherThreadLocal**: similar to `serverPathConstructOnIteration`, but uses `ThreadLocal` instead of always constructing a new instance of `SmartPathFinder`.
+    - **GameClickAltPath**: destination outside of valid search distance (path finder force to iterate the whole search area) (~72 tiles).
+    - **GameClickLongPath**: destination near upper limit of `SmartPathFinder::searchMapSize` radius (~63 tiles).
+    - **GameClickMedPath**: destination about half of `SmartPathFinder::searchMapSize` radius (~32 tiles).
+    - **GameClickShortPath**: destination near lower limit of `SmartPathFinder::searchMapSize` radius (~8 tiles).
+    - **clientPath**: simple zero-allocation third-party implementation.
+    - **serverPathConstructOnIteration**: construct a new `SmartPathFinder` for every iteration.
+    - **serverPathResetOnIteration**: reset values on same `SmartPathFinder` instance to re-use every iteration.
+    - **serverPathCoroutineDispatcherConstruct**: similar to `serverPathConstructOnIteration`, but using coroutines for each iteration.
+    - **serverPathCoroutineDispatcherThreadLocal**: similar to `serverPathCoroutineDispatcherConstruct`, but uses `ThreadLocal` instead of always constructing a new instance of `SmartPathFinder`.
 
 ## Contributing
 Pull requests are welcome on [GitHub][github].
