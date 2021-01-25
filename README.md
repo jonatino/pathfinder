@@ -27,7 +27,7 @@ fun smartRoute(srcX: Int, srcY: Int, destX: Int, destY: Int, level: Int): Route 
 fun clipFlags(centerX: Int, centerY: Int, level: Int, size: Int): IntArray {
     val half = size / 2
     val flags = IntArray(size * size)
-    val rangeX = centerX - half until center.x + half
+    val rangeX = centerX - half until centerX + half
     val rangeY = centerY - half until centerY + half
     for (y in rangeY) {
         for (x in rangeX) {
