@@ -15,6 +15,36 @@ dependencies {
 }
 ```
 
+## Example
+
+```kotlin
+fun smartRoute(srcX: Int, srcY: Int, destX: Int, destY: Int, level: Int): Route {
+    val pf = SmartPathFinder()
+    val flags = clipFlags(srcX, srcY, level, pf.searchMapSize)
+    return pf.findPath(flags, srcX, srcY, destX, destY)
+}
+
+fun clipFlags(centerX: Int, centerY: Int, level: Int, size: Int): IntArray {
+    val half = size / 2
+    val flags = IntArray(size * size)
+    val rangeX = centerX - half until center.x + half
+    val rangeY = centerY - half until centerY + half
+    for (y in rangeY) {
+        for (x in rangeX) {
+            val coords = Coordinates(x, y, level)
+            /*
+             * collision map stores tile collision flags for all
+             * tiles in the world.
+             */
+            val flag = collisionMap.get(coords)
+            val index = (y * size) + x
+            flags[index] = flag
+        }
+    }
+    return flags
+}
+```
+
 ## Contributing
 Pull requests are welcome on [GitHub](https://github.com/rsmod/pathfinder).
 
