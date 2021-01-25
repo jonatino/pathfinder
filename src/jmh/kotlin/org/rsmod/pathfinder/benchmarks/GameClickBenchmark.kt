@@ -2,6 +2,10 @@ package org.rsmod.pathfinder.benchmarks
 
 import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.databind.ObjectMapper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.annotations.BenchmarkMode
 import org.openjdk.jmh.annotations.Fork
@@ -14,12 +18,13 @@ import org.openjdk.jmh.annotations.State
 import org.openjdk.jmh.annotations.Warmup
 import org.rsmod.pathfinder.Route
 import org.rsmod.pathfinder.SmartPathFinder
+import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.TimeUnit
 
 open class GameClickShortPath : GameClickBenchmark("short-path.json")
 open class GameClickMedPath : GameClickBenchmark("med-path.json")
 open class GameClickLongPath : GameClickBenchmark("long-path.json")
-open class GameClickOutOfBoundPath : GameClickBenchmark("outofbound-path.json")
+open class GameClickAltPath : GameClickBenchmark("outofbound-path.json")
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
@@ -30,12 +35,17 @@ open class GameClickOutOfBoundPath : GameClickBenchmark("outofbound-path.json")
 abstract class GameClickBenchmark(private val parameterResourceName: String) {
 
     private lateinit var params: PathFinderParameter
+    private lateinit var scope: CoroutineScope
 
     @Setup
     fun setup() {
         val stream = Route::class.java.getResourceAsStream(parameterResourceName)
         val mapper = ObjectMapper(JsonFactory())
         params = stream.use { mapper.readValue(it, PathFinderParameter::class.java) }
+
+        val executor = ForkJoinPool(Runtime.getRuntime().availableProcessors())
+        val dispatcher = executor.asCoroutineDispatcher()
+        scope = CoroutineScope(dispatcher)
 
         val mapSize = ClientPathfinder.SIZE
         for (i in ClientPathfinder.scene.indices) {
@@ -76,5 +86,38 @@ abstract class GameClickBenchmark(private val parameterResourceName: String) {
         repeat(iterations) {
             pf.findPath(clipFlags, srcX, srcY, destX, destY)
         }
+    }
+
+    @Benchmark
+    fun serverPathCoroutineDispatcherThreadLocal() = runBlocking {
+        val (iterations, srcX, srcY, destX, destY, clipFlags) = params
+        val threadLocal = ThreadLocal.withInitial { SmartPathFinder(resetOnSearch = true) }
+
+        fun CoroutineScope.findPath() = launch {
+            val pf = threadLocal.get()
+            pf.findPath(clipFlags, srcX, srcY, destX, destY)
+        }
+
+        launch(scope.coroutineContext) {
+            repeat(iterations) {
+                findPath()
+            }
+        }.join()
+    }
+
+    @Benchmark
+    fun serverPathCoroutineDispatcherConstruct() = runBlocking {
+        val (iterations, srcX, srcY, destX, destY, clipFlags) = params
+
+        fun CoroutineScope.findPath() = launch {
+            val pf = SmartPathFinder(resetOnSearch = false)
+            pf.findPath(clipFlags, srcX, srcY, destX, destY)
+        }
+
+        launch(scope.coroutineContext) {
+            repeat(iterations) {
+                findPath()
+            }
+        }.join()
     }
 }

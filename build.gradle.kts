@@ -19,6 +19,7 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     jmh("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
+    jmh("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.0")
     testImplementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.3")
     testImplementation("org.junit.jupiter:junit-jupiter:5.7.0")
 }
