@@ -6,7 +6,6 @@ import org.rsmod.pathfinder.bound.reachWallDeco
 import org.rsmod.pathfinder.flag.CollisionFlag
 import org.rsmod.pathfinder.flag.DirectionFlag
 import java.util.Arrays
-import java.util.LinkedList
 import kotlin.collections.ArrayList
 import kotlin.math.abs
 
@@ -25,8 +24,6 @@ private const val WALL_STRATEGY = 0
 private const val WALL_DECO_STRATEGY = 1
 private const val RECTANGLE_STRATEGY = 2
 private const val NO_STRATEGY = 3
-
-private val EMPTY_QUEUE = LinkedList<RouteCoordinates>()
 
 /*
  * For optimization, we use this value to separate each section
@@ -115,9 +112,9 @@ public class SmartPathFinder(
         }
         if (!pathFound) {
             if (!moveNear) {
-                return Route(EMPTY_QUEUE, alternative = false, success = false)
+                return Route(emptyList(), alternative = false, success = false)
             } else if (!findClosestApproachPoint(localSrcX, localSrcY, localDestX, localDestY)) {
-                return Route(EMPTY_QUEUE, alternative = false, success = false)
+                return Route(emptyList(), alternative = false, success = false)
             }
         }
         val coordinates = ArrayList<RouteCoordinates>(255)
