@@ -30,7 +30,7 @@ private val EMPTY_QUEUE = LinkedList<RouteCoordinates>()
 
 /*
  * For optimization, we use this value to separate each section
- * where the list of route coordinates made a turn in direction.
+ * where the list of route coordinates made a turn in any direction.
  */
 private val TURN_COORDS = RouteCoordinates(0)
 

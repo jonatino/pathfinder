@@ -87,7 +87,7 @@ fun clipFlags(centerX: Int, centerY: Int, level: Int, size: Int): IntArray {
     GameClickShortPath.serverPathCoroutineDispatcherThreadLocal         avgt    3    2.065 ±   0.980  ms/op
     ```
     #### Glossary
-    - **GameClickAltPath**: destination outside of valid search distance (path finder force to iterate the whole search area) (~72 tiles).
+    - **GameClickAltPath**: destination outside of valid search distance (path finder forced to iterate the whole search area) (~72 tiles).
     - **GameClickLongPath**: destination near upper limit of `SmartPathFinder::searchMapSize` radius (~63 tiles).
     - **GameClickMedPath**: destination about half of `SmartPathFinder::searchMapSize` radius (~32 tiles).
     - **GameClickShortPath**: destination near lower limit of `SmartPathFinder::searchMapSize` radius (~8 tiles).
@@ -95,7 +95,7 @@ fun clipFlags(centerX: Int, centerY: Int, level: Int, size: Int): IntArray {
     - **serverPathConstructOnIteration**: construct a new `SmartPathFinder` for every iteration.
     - **serverPathResetOnIteration**: reset values on same `SmartPathFinder` instance to re-use every iteration.
     - **serverPathCoroutineDispatcherConstruct**: similar to `serverPathConstructOnIteration`, but using coroutines for each iteration.
-    - **serverPathCoroutineDispatcherThreadLocal**: similar to `serverPathCoroutineDispatcherConstruct`, but uses `ThreadLocal` instead of always constructing a new instance of `SmartPathFinder`.
+    - **serverPathCoroutineDispatcherThreadLocal**: similar to `serverPathCoroutineDispatcherConstruct`, but uses `ThreadLocal` instead of always constructing a new `SmartPathFinder` instance per iteration.
 
 ## Contributing
 Pull requests are welcome on [GitHub][github].
