@@ -13,7 +13,7 @@ private object SouthEast : Direction()
 private object NorthWest : Direction()
 private object SouthWest : Direction()
 
-public class DumbPathFinder(public val searchMapSize: Int = 128) {
+public class DumbPathFinder(public val searchMapSize: Int = DEFAULT_SEARCH_MAP_SIZE) {
 
     public fun findPath(
         clipFlags: IntArray,
