@@ -57,6 +57,8 @@ fun clipFlags(centerX: Int, centerY: Int, level: Int, size: Int): IntArray {
 
     ### Smart Path Finder (BFS)
     Each benchmark calculates 2000 paths from short to out-of-bound (beyond search distance) destinations.
+
+    *(These times do not include fetching the collision flags you have to feed into `SmartPathFinder::findPath` as that is up to the end-user to calculate)*
     ```
     Benchmark                                                           Mode  Cnt    Score     Error  Units
 
