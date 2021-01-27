@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.rsmod:pathfinder:1.0.9")
+    implementation("org.rsmod:pathfinder:1.0.10")
 }
 ```
 
@@ -62,29 +62,29 @@ fun clipFlags(centerX: Int, centerY: Int, level: Int, size: Int): IntArray {
     ```
     Benchmark                                                           Mode  Cnt    Score     Error  Units
 
-    GameClickAltPath.clientPath                                         avgt    3  624.062 ± 111.069  ms/op
-    GameClickAltPath.serverPathConstructOnIteration                     avgt    3  543.000 ±  35.677  ms/op
-    GameClickAltPath.serverPathResetOnIteration                         avgt    3  536.212 ±  87.506  ms/op
-    GameClickAltPath.serverPathCoroutineDispatcherConstruct             avgt    3  113.669 ±  50.609  ms/op
-    GameClickAltPath.serverPathCoroutineDispatcherThreadLocal           avgt    3  110.522 ±  74.650  ms/op
+    GameClickAltPath.clientPath                                         avgt    3  594.107 ± 179.884  ms/op
+    GameClickAltPath.serverPathConstructOnIteration                     avgt    3  561.331 ±   6.033  ms/op
+    GameClickAltPath.serverPathResetOnIteration                         avgt    3  555.649 ±  20.237  ms/op
+    GameClickAltPath.serverPathCoroutineDispatcherConstruct             avgt    3  114.787 ±  84.132  ms/op
+    GameClickAltPath.serverPathCoroutineDispatcherThreadLocal           avgt    3  105.676 ±   0.590  ms/op
 
-    GameClickLongPath.clientPath                                        avgt    3  312.648 ±  97.070  ms/op
-    GameClickLongPath.serverPathConstructOnIteration                    avgt    3  284.130 ±  16.656  ms/op
-    GameClickLongPath.serverPathResetOnIteration                        avgt    3  274.803 ±   8.607  ms/op
-    GameClickLongPath.serverPathCoroutineDispatcherConstruct            avgt    3   59.556 ±  32.583  ms/op
-    GameClickLongPath.serverPathCoroutineDispatcherThreadLocal          avgt    3   61.593 ±  74.289  ms/op
+    GameClickLongPath.clientPath                                        avgt    3  308.005 ± 126.878  ms/op
+    GameClickLongPath.serverPathConstructOnIteration                    avgt    3  294.406 ±  34.127  ms/op
+    GameClickLongPath.serverPathResetOnIteration                        avgt    3  285.443 ± 119.789  ms/op
+    GameClickLongPath.serverPathCoroutineDispatcherConstruct            avgt    3   58.291 ±  12.354  ms/op
+    GameClickLongPath.serverPathCoroutineDispatcherThreadLocal          avgt    3   59.541 ±  41.977  ms/op
 
-    GameClickMedPath.clientPath                                         avgt    3  252.644 ±  39.104  ms/op
-    GameClickMedPath.serverPathConstructOnIteration                     avgt    3  234.207 ±  10.811  ms/op
-    GameClickMedPath.serverPathResetOnIteration                         avgt    3  224.111 ±  18.178  ms/op
-    GameClickMedPath.serverPathCoroutineDispatcherConstruct             avgt    3   50.231 ±  13.068  ms/op
-    GameClickMedPath.serverPathCoroutineDispatcherThreadLocal           avgt    3   49.616 ±  37.505  ms/op
+    GameClickMedPath.clientPath                                         avgt    3  255.790 ±  44.855  ms/op
+    GameClickMedPath.serverPathConstructOnIteration                     avgt    3  241.232 ±  42.122  ms/op
+    GameClickMedPath.serverPathResetOnIteration                         avgt    3  231.529 ±   8.699  ms/op
+    GameClickMedPath.serverPathCoroutineDispatcherConstruct             avgt    3   50.996 ±  55.673  ms/op
+    GameClickMedPath.serverPathCoroutineDispatcherThreadLocal           avgt    3   47.031 ±   5.266  ms/op
 
-    GameClickShortPath.clientPath                                       avgt    3   11.663 ±  15.309  ms/op
-    GameClickShortPath.serverPathConstructOnIteration                   avgt    3   15.547 ±   1.233  ms/op
-    GameClickShortPath.serverPathResetOnIteration                       avgt    3    6.223 ±   0.809  ms/op
-    GameClickShortPath.serverPathCoroutineDispatcherConstruct           avgt    3   12.505 ±   3.163  ms/op
-    GameClickShortPath.serverPathCoroutineDispatcherThreadLocal         avgt    3    2.065 ±   0.980  ms/op
+    GameClickShortPath.clientPath                                       avgt    3   11.667 ±  11.809  ms/op
+    GameClickShortPath.serverPathConstructOnIteration                   avgt    3   15.909 ±   2.177  ms/op
+    GameClickShortPath.serverPathResetOnIteration                       avgt    3    6.262 ±   0.170  ms/op
+    GameClickShortPath.serverPathCoroutineDispatcherConstruct           avgt    3   12.035 ±  10.571  ms/op
+    GameClickShortPath.serverPathCoroutineDispatcherThreadLocal         avgt    3    1.922 ±   0.116  ms/op
     ```
     #### Glossary
     - **GameClickAltPath**: destination outside of valid search distance (path finder forced to iterate the whole search area) (~72 tiles).

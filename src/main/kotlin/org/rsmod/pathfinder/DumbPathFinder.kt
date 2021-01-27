@@ -1,6 +1,8 @@
 package org.rsmod.pathfinder
 
 import org.rsmod.pathfinder.bound.reachRectangle
+import org.rsmod.pathfinder.collision.CollisionStrategies
+import org.rsmod.pathfinder.collision.CollisionStrategy
 import org.rsmod.pathfinder.flag.CollisionFlag
 
 private sealed class Direction
@@ -23,7 +25,8 @@ public class DumbPathFinder(public val searchMapSize: Int = DEFAULT_SEARCH_MAP_S
         destY: Int,
         srcSize: Int = 1,
         destWidth: Int = 0,
-        destHeight: Int = 0
+        destHeight: Int = 0,
+        collision: CollisionStrategy = CollisionStrategies.Normal
     ): Route {
         val baseX = srcX - (searchMapSize / 2)
         val baseY = srcY - (searchMapSize / 2)
@@ -55,7 +58,7 @@ public class DumbPathFinder(public val searchMapSize: Int = DEFAULT_SEARCH_MAP_S
             val startX = x
             val startY = y
             val dir = getDirection(x, y, localDestX, localDestY) ?: break
-            val blocked = dir.isBlocked(clipFlags, x, y, srcSize)
+            val blocked = dir.isBlocked(clipFlags, x, y, srcSize, collision)
             if (dir == South && !blocked) {
                 y--
             } else if (dir == North && !blocked) {
@@ -66,9 +69,9 @@ public class DumbPathFinder(public val searchMapSize: Int = DEFAULT_SEARCH_MAP_S
                 x++
             } else if (dir == SouthWest) {
                 if (blocked) {
-                    if (!South.isBlocked(clipFlags, x, y, srcSize)) {
+                    if (!South.isBlocked(clipFlags, x, y, srcSize, collision)) {
                         y--
-                    } else if (!West.isBlocked(clipFlags, x, y, srcSize)) {
+                    } else if (!West.isBlocked(clipFlags, x, y, srcSize, collision)) {
                         x--
                     }
                 } else {
@@ -77,9 +80,9 @@ public class DumbPathFinder(public val searchMapSize: Int = DEFAULT_SEARCH_MAP_S
                 }
             } else if (dir == NorthWest) {
                 if (blocked) {
-                    if (!North.isBlocked(clipFlags, x, y, srcSize)) {
+                    if (!North.isBlocked(clipFlags, x, y, srcSize, collision)) {
                         y++
-                    } else if (!West.isBlocked(clipFlags, x, y, srcSize)) {
+                    } else if (!West.isBlocked(clipFlags, x, y, srcSize, collision)) {
                         x--
                     }
                 } else {
@@ -88,9 +91,9 @@ public class DumbPathFinder(public val searchMapSize: Int = DEFAULT_SEARCH_MAP_S
                 }
             } else if (dir == SouthEast) {
                 if (blocked) {
-                    if (!South.isBlocked(clipFlags, x, y, srcSize)) {
+                    if (!South.isBlocked(clipFlags, x, y, srcSize, collision)) {
                         y--
-                    } else if (!East.isBlocked(clipFlags, x, y, srcSize)) {
+                    } else if (!East.isBlocked(clipFlags, x, y, srcSize, collision)) {
                         x++
                     }
                 } else {
@@ -99,9 +102,9 @@ public class DumbPathFinder(public val searchMapSize: Int = DEFAULT_SEARCH_MAP_S
                 }
             } else if (dir == NorthEast) {
                 if (blocked) {
-                    if (!North.isBlocked(clipFlags, x, y, srcSize)) {
+                    if (!North.isBlocked(clipFlags, x, y, srcSize, collision)) {
                         y++
-                    } else if (!East.isBlocked(clipFlags, x, y, srcSize)) {
+                    } else if (!East.isBlocked(clipFlags, x, y, srcSize, collision)) {
                         x++
                     }
                 } else {
@@ -122,150 +125,154 @@ public class DumbPathFinder(public val searchMapSize: Int = DEFAULT_SEARCH_MAP_S
         clipFlags: IntArray,
         x: Int,
         y: Int,
-        srcSize: Int
+        srcSize: Int,
+        collision: CollisionStrategy
     ): Boolean = when (srcSize) {
-        1 -> isBlocked1(clipFlags, x, y)
-        2 -> isBlocked2(clipFlags, x, y)
-        else -> isBlockedN(clipFlags, x, y, srcSize)
+        1 -> isBlocked1(clipFlags, x, y, collision)
+        2 -> isBlocked2(clipFlags, x, y, collision)
+        else -> isBlockedN(clipFlags, x, y, srcSize, collision)
     }
 
     private fun Direction.isBlocked1(
         clipFlags: IntArray,
         x: Int,
-        y: Int
+        y: Int,
+        collision: CollisionStrategy
     ): Boolean = when (this) {
-        South -> (clipFlags[x, y - 1] and CollisionFlag.BLOCK_SOUTH) != 0
-        North -> (clipFlags[x, y + 1] and CollisionFlag.BLOCK_NORTH) != 0
-        West -> (clipFlags[x - 1, y] and CollisionFlag.BLOCK_WEST) != 0
-        East -> (clipFlags[x + 1, y] and CollisionFlag.BLOCK_EAST) != 0
-        SouthWest -> (clipFlags[x - 1, y - 1] and CollisionFlag.BLOCK_SOUTH_WEST) != 0
-            || (clipFlags[x - 1, y] and CollisionFlag.BLOCK_WEST) != 0
-            || (clipFlags[x, y - 1] and CollisionFlag.BLOCK_SOUTH) != 0
-        NorthWest -> (clipFlags[x - 1, y + 1] and CollisionFlag.BLOCK_NORTH_WEST) != 0
-            || (clipFlags[x - 1, y] and CollisionFlag.BLOCK_WEST) != 0
-            || (clipFlags[x, y + 1] and CollisionFlag.BLOCK_NORTH) != 0
-        SouthEast -> (clipFlags[x + 1, y - 1] and CollisionFlag.BLOCK_SOUTH_EAST) != 0
-            || (clipFlags[x + 1, y] and CollisionFlag.BLOCK_EAST) != 0
-            || (clipFlags[x, y - 1] and CollisionFlag.BLOCK_SOUTH) != 0
-        NorthEast -> (clipFlags[x + 1, y + 1] and CollisionFlag.BLOCK_NORTH_EAST) != 0
-            || (clipFlags[x + 1, y] and CollisionFlag.BLOCK_EAST) != 0
-            || (clipFlags[x, y + 1] and CollisionFlag.BLOCK_NORTH) != 0
+        South -> !collision.canMove(clipFlags[x, y - 1], CollisionFlag.BLOCK_SOUTH)
+        North -> !collision.canMove(clipFlags[x, y + 1], CollisionFlag.BLOCK_NORTH)
+        West -> !collision.canMove(clipFlags[x - 1, y], CollisionFlag.BLOCK_WEST)
+        East -> !collision.canMove(clipFlags[x + 1, y], CollisionFlag.BLOCK_EAST)
+        SouthWest -> !collision.canMove(clipFlags[x - 1, y - 1], CollisionFlag.BLOCK_SOUTH_WEST)
+            || !collision.canMove(clipFlags[x - 1, y], CollisionFlag.BLOCK_WEST)
+            || !collision.canMove(clipFlags[x, y - 1], CollisionFlag.BLOCK_SOUTH)
+        NorthWest -> !collision.canMove(clipFlags[x - 1, y + 1], CollisionFlag.BLOCK_NORTH_WEST)
+            || !collision.canMove(clipFlags[x - 1, y], CollisionFlag.BLOCK_WEST)
+            || !collision.canMove(clipFlags[x, y + 1], CollisionFlag.BLOCK_NORTH)
+        SouthEast -> !collision.canMove(clipFlags[x + 1, y - 1], CollisionFlag.BLOCK_SOUTH_EAST)
+            || !collision.canMove(clipFlags[x + 1, y], CollisionFlag.BLOCK_EAST)
+            || !collision.canMove(clipFlags[x, y - 1], CollisionFlag.BLOCK_SOUTH)
+        NorthEast -> !collision.canMove(clipFlags[x + 1, y + 1], CollisionFlag.BLOCK_NORTH_EAST)
+            || !collision.canMove(clipFlags[x + 1, y], CollisionFlag.BLOCK_EAST)
+            || !collision.canMove(clipFlags[x, y + 1], CollisionFlag.BLOCK_NORTH)
     }
 
     private fun Direction.isBlocked2(
         clipFlags: IntArray,
         x: Int,
-        y: Int
+        y: Int,
+        collision: CollisionStrategy
     ): Boolean = when (this) {
-        South -> (clipFlags[x, y - 1] and CollisionFlag.BLOCK_SOUTH_WEST) != 0
-            || (clipFlags[x + 1, y - 1] and CollisionFlag.BLOCK_SOUTH_EAST) != 0
-        North -> (clipFlags[x, y + 2] and CollisionFlag.BLOCK_NORTH_WEST) != 0
-            || (clipFlags[x + 1, y + 2] and CollisionFlag.BLOCK_NORTH_EAST) != 0
-        West -> (clipFlags[x - 1, y] and CollisionFlag.BLOCK_SOUTH_WEST) != 0
-            || (clipFlags[x - 1, y + 1] and CollisionFlag.BLOCK_NORTH_WEST) != 0
-        East -> (clipFlags[x + 2, y] and CollisionFlag.BLOCK_SOUTH_EAST) != 0
-            || (clipFlags[x + 2, y + 1] and CollisionFlag.BLOCK_NORTH_EAST) != 0
-        SouthWest -> (clipFlags[x - 1, y] and CollisionFlag.BLOCK_NORTH_WEST) != 0
-            || (clipFlags[x - 1, y - 1] and CollisionFlag.BLOCK_SOUTH_WEST) != 0
-            || (clipFlags[x, y - 1] and CollisionFlag.BLOCK_SOUTH_EAST) != 0
-        NorthWest -> (clipFlags[x - 1, y + 1] and CollisionFlag.BLOCK_SOUTH_WEST) != 0
-            || (clipFlags[x - 1, y + 2] and CollisionFlag.BLOCK_NORTH_WEST) != 0
-            || (clipFlags[x, y + 2] and CollisionFlag.BLOCK_NORTH_EAST) != 0
-        SouthEast -> (clipFlags[x + 1, y - 1] and CollisionFlag.BLOCK_SOUTH_WEST) != 0
-            || (clipFlags[x + 2, y - 1] and CollisionFlag.BLOCK_SOUTH_EAST) != 0
-            || (clipFlags[x + 2, y] and CollisionFlag.BLOCK_NORTH_EAST) != 0
-        NorthEast -> (clipFlags[x + 1, y + 2] and CollisionFlag.BLOCK_NORTH_WEST) != 0
-            || (clipFlags[x + 2, y + 2] and CollisionFlag.BLOCK_NORTH_EAST) != 0
-            || (clipFlags[x + 2, y + 1] and CollisionFlag.BLOCK_SOUTH_EAST) != 0
+        South -> !collision.canMove(clipFlags[x, y - 1], CollisionFlag.BLOCK_SOUTH_WEST)
+            || !collision.canMove(clipFlags[x + 1, y - 1], CollisionFlag.BLOCK_SOUTH_EAST)
+        North -> !collision.canMove(clipFlags[x, y + 2], CollisionFlag.BLOCK_NORTH_WEST)
+            || !collision.canMove(clipFlags[x + 1, y + 2], CollisionFlag.BLOCK_NORTH_EAST)
+        West -> !collision.canMove(clipFlags[x - 1, y], CollisionFlag.BLOCK_SOUTH_WEST)
+            || !collision.canMove(clipFlags[x - 1, y + 1], CollisionFlag.BLOCK_NORTH_WEST)
+        East -> !collision.canMove(clipFlags[x + 2, y], CollisionFlag.BLOCK_SOUTH_EAST)
+            || !collision.canMove(clipFlags[x + 2, y + 1], CollisionFlag.BLOCK_NORTH_EAST)
+        SouthWest -> !collision.canMove(clipFlags[x - 1, y], CollisionFlag.BLOCK_NORTH_WEST)
+            || !collision.canMove(clipFlags[x - 1, y - 1], CollisionFlag.BLOCK_SOUTH_WEST)
+            || !collision.canMove(clipFlags[x, y - 1], CollisionFlag.BLOCK_SOUTH_EAST)
+        NorthWest -> !collision.canMove(clipFlags[x - 1, y + 1], CollisionFlag.BLOCK_SOUTH_WEST)
+            || !collision.canMove(clipFlags[x - 1, y + 2], CollisionFlag.BLOCK_NORTH_WEST)
+            || !collision.canMove(clipFlags[x, y + 2], CollisionFlag.BLOCK_NORTH_EAST)
+        SouthEast -> !collision.canMove(clipFlags[x + 1, y - 1], CollisionFlag.BLOCK_SOUTH_WEST)
+            || !collision.canMove(clipFlags[x + 2, y - 1], CollisionFlag.BLOCK_SOUTH_EAST)
+            || !collision.canMove(clipFlags[x + 2, y], CollisionFlag.BLOCK_NORTH_EAST)
+        NorthEast -> !collision.canMove(clipFlags[x + 1, y + 2], CollisionFlag.BLOCK_NORTH_WEST)
+            || !collision.canMove(clipFlags[x + 2, y + 2], CollisionFlag.BLOCK_NORTH_EAST)
+            || !collision.canMove(clipFlags[x + 2, y + 1], CollisionFlag.BLOCK_SOUTH_EAST)
     }
 
     private fun Direction.isBlockedN(
         clipFlags: IntArray,
         x: Int,
         y: Int,
-        srcSize: Int
+        srcSize: Int,
+        collision: CollisionStrategy
     ): Boolean = when (this) {
         South -> {
-            if ((clipFlags[x, y - 1] and CollisionFlag.BLOCK_SOUTH_WEST) == 0
-                && (clipFlags[x + srcSize - 1, y - 1] and CollisionFlag.BLOCK_SOUTH_EAST) == 0
+            if (collision.canMove(clipFlags[x, y - 1], CollisionFlag.BLOCK_SOUTH_WEST)
+                && collision.canMove(clipFlags[x + srcSize - 1, y - 1], CollisionFlag.BLOCK_SOUTH_EAST)
             ) {
                 val clipFlag = CollisionFlag.BLOCK_NORTH_EAST_AND_WEST
-                (1 until srcSize - 1).any { clipFlags[x + it, y] and clipFlag != 0 }
+                (1 until srcSize - 1).any { !collision.canMove(clipFlags[x + it, y], clipFlag) }
             } else true
         }
         North -> {
-            if ((clipFlags[x, y + srcSize] and CollisionFlag.BLOCK_NORTH_WEST) == 0
-                && (clipFlags[x + srcSize - 1, y + srcSize] and CollisionFlag.BLOCK_NORTH_EAST) == 0
+            if (collision.canMove(clipFlags[x, y + srcSize], CollisionFlag.BLOCK_NORTH_WEST)
+                && collision.canMove(clipFlags[x + srcSize - 1, y + srcSize], CollisionFlag.BLOCK_NORTH_EAST)
             ) {
                 val clipFlag = CollisionFlag.BLOCK_SOUTH_EAST_AND_WEST
-                (1 until srcSize - 1).any { clipFlags[x + it, y] and clipFlag != 0 }
+                (1 until srcSize - 1).any { !collision.canMove(clipFlags[x + it, y], clipFlag) }
             } else true
         }
         West -> {
-            if ((clipFlags[x - 1, y] and CollisionFlag.BLOCK_SOUTH_WEST) == 0
-                && (clipFlags[x - 1, y + srcSize - 1] and CollisionFlag.BLOCK_NORTH_WEST) == 0
+            if (collision.canMove(clipFlags[x - 1, y], CollisionFlag.BLOCK_SOUTH_WEST)
+                && collision.canMove(clipFlags[x - 1, y + srcSize - 1], CollisionFlag.BLOCK_NORTH_WEST)
             ) {
                 val clipFlag = CollisionFlag.BLOCK_NORTH_AND_SOUTH_EAST
-                (1 until srcSize - 1).any { clipFlags[x + it, y] and clipFlag != 0 }
+                (1 until srcSize - 1).any { !collision.canMove(clipFlags[x + it, y], clipFlag) }
             } else true
         }
         East -> {
-            if ((clipFlags[x + srcSize, y] and CollisionFlag.BLOCK_SOUTH_EAST) == 0
-                && (clipFlags[x + srcSize, y + srcSize - 1] and CollisionFlag.BLOCK_NORTH_EAST) == 0
+            if (collision.canMove(clipFlags[x + srcSize, y], CollisionFlag.BLOCK_SOUTH_EAST)
+                && collision.canMove(clipFlags[x + srcSize, y + srcSize - 1], CollisionFlag.BLOCK_NORTH_EAST)
             ) {
                 val clipFlag = CollisionFlag.BLOCK_NORTH_AND_SOUTH_WEST
-                (1 until srcSize - 1).any { clipFlags[x + it, y] and clipFlag != 0 }
+                (1 until srcSize - 1).any { !collision.canMove(clipFlags[x + it, y], clipFlag) }
             } else true
         }
         SouthWest -> {
-            if ((clipFlags[x - 1, y + srcSize - 2] and CollisionFlag.BLOCK_NORTH_WEST) == 0
-                && (clipFlags[x - 1, y - 1] and CollisionFlag.BLOCK_SOUTH_WEST) == 0
-                && (clipFlags[x + srcSize - 2, y - 1] and CollisionFlag.BLOCK_SOUTH_EAST) == 0
+            if (collision.canMove(clipFlags[x - 1, y + srcSize - 2], CollisionFlag.BLOCK_NORTH_WEST)
+                && collision.canMove(clipFlags[x - 1, y - 1], CollisionFlag.BLOCK_SOUTH_WEST)
+                && collision.canMove(clipFlags[x + srcSize - 2, y - 1], CollisionFlag.BLOCK_SOUTH_EAST)
             ) {
                 val clipFlag1 = CollisionFlag.BLOCK_SOUTH_EAST_AND_WEST
                 val clipFlag2 = CollisionFlag.BLOCK_NORTH_EAST_AND_WEST
                 (1 until srcSize - 1).any {
-                    clipFlags[x - 1, y + it - 1] and clipFlag1 != 0
-                        || clipFlags[x + it - 1, y - 1] and clipFlag2 != 0
+                    !collision.canMove(clipFlags[x - 1, y + it - 1], clipFlag1)
+                        || !collision.canMove(clipFlags[x + it - 1, y - 1], clipFlag2)
                 }
             } else true
         }
         NorthWest -> {
-            if ((clipFlags[x - 1, y + 1] and CollisionFlag.BLOCK_SOUTH_WEST) == 0
-                && (clipFlags[x - 1, y + srcSize] and CollisionFlag.BLOCK_NORTH_WEST) == 0
-                && (clipFlags[x, y + srcSize] and CollisionFlag.BLOCK_NORTH_EAST) == 0
+            if (collision.canMove(clipFlags[x - 1, y + 1], CollisionFlag.BLOCK_SOUTH_WEST)
+                && collision.canMove(clipFlags[x - 1, y + srcSize], CollisionFlag.BLOCK_NORTH_WEST)
+                && collision.canMove(clipFlags[x, y + srcSize], CollisionFlag.BLOCK_NORTH_EAST)
             ) {
                 val clipFlag1 = CollisionFlag.BLOCK_NORTH_AND_SOUTH_EAST
                 val clipFlag2 = CollisionFlag.BLOCK_SOUTH_EAST_AND_WEST
                 (1 until srcSize - 1).any {
-                    clipFlags[x - 1, y + it - 1] and clipFlag1 != 0
-                        || clipFlags[x + it - 1, y + srcSize] and clipFlag2 != 0
+                    !collision.canMove(clipFlags[x - 1, y + it - 1], clipFlag1)
+                        || !collision.canMove(clipFlags[x + it - 1, y + srcSize], clipFlag2)
                 }
             } else true
         }
         SouthEast -> {
-            if ((clipFlags[x + 1, y - 1] and CollisionFlag.BLOCK_SOUTH_WEST) == 0
-                && (clipFlags[x + srcSize, y - 1] and CollisionFlag.BLOCK_SOUTH_EAST) == 0
-                && (clipFlags[x + srcSize, y + srcSize - 2] and CollisionFlag.BLOCK_NORTH_EAST) == 0
+            if (collision.canMove(clipFlags[x + 1, y - 1], CollisionFlag.BLOCK_SOUTH_WEST)
+                && collision.canMove(clipFlags[x + srcSize, y - 1], CollisionFlag.BLOCK_SOUTH_EAST)
+                && collision.canMove(clipFlags[x + srcSize, y + srcSize - 2], CollisionFlag.BLOCK_NORTH_EAST)
             ) {
                 val clipFlag1 = CollisionFlag.BLOCK_NORTH_AND_SOUTH_WEST
                 val clipFlag2 = CollisionFlag.BLOCK_NORTH_EAST_AND_WEST
                 (1 until srcSize - 1).any {
-                    clipFlags[x + srcSize, y + it - 1] and clipFlag1 != 0
-                        || clipFlags[x + it + 1, y - 1] and clipFlag2 != 0
+                    !collision.canMove(clipFlags[x + srcSize, y + it - 1], clipFlag1)
+                        || !collision.canMove(clipFlags[x + it + 1, y - 1], clipFlag2)
                 }
             } else true
         }
         NorthEast -> {
-            if ((clipFlags[x + 1, y + srcSize] and CollisionFlag.BLOCK_NORTH_WEST) == 0
-                && (clipFlags[x + srcSize, y + srcSize] and CollisionFlag.BLOCK_NORTH_EAST) == 0
-                && (clipFlags[x + srcSize, y + 1] and CollisionFlag.BLOCK_SOUTH_EAST) == 0
+            if (collision.canMove(clipFlags[x + 1, y + srcSize], CollisionFlag.BLOCK_NORTH_WEST)
+                && collision.canMove(clipFlags[x + srcSize, y + srcSize], CollisionFlag.BLOCK_NORTH_EAST)
+                && collision.canMove(clipFlags[x + srcSize, y + 1], CollisionFlag.BLOCK_SOUTH_EAST)
             ) {
                 val clipFlag1 = CollisionFlag.BLOCK_SOUTH_EAST_AND_WEST
                 val clipFlag2 = CollisionFlag.BLOCK_NORTH_AND_SOUTH_WEST
                 (1 until srcSize - 1).any {
-                    clipFlags[x + it + 1, y + srcSize] and clipFlag1 != 0
-                        || clipFlags[x + srcSize, y + it + 1] and clipFlag2 != 0
+                    !collision.canMove(clipFlags[x + it + 1, y + srcSize], clipFlag1)
+                        || !collision.canMove(clipFlags[x + srcSize, y + it + 1], clipFlag2)
                 }
             } else true
         }

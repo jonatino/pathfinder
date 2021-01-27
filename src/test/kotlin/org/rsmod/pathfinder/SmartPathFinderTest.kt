@@ -10,6 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.ArgumentsProvider
 import org.junit.jupiter.params.provider.ArgumentsSource
+import org.rsmod.pathfinder.collision.InverseBlockFlagCollision
 import org.rsmod.pathfinder.flag.CollisionFlag
 import java.util.stream.Stream
 
@@ -41,6 +42,7 @@ class SmartPathFinderTest {
         flags[(flagY * DEFAULT_SEARCH_MAP_SIZE) + flagX] = CollisionFlag.FLOOR
 
         val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y)
+        Assertions.assertTrue(route.failed)
         Assertions.assertTrue(route.isEmpty())
     }
 
@@ -66,6 +68,43 @@ class SmartPathFinderTest {
         val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y)
         Assertions.assertEquals(src.x + -maxDistance, route.last().x)
         Assertions.assertEquals(dest.y, route.last().y)
+    }
+
+    @Test
+    fun allowSameFlagInverseTraversal() {
+        val pf = SmartPathFinder()
+        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
+        val src = RouteCoordinates(0, 0)
+        val dest = RouteCoordinates(1, 0)
+        val flag = CollisionFlag.FLOOR
+        val srcFlagX = src.x + (DEFAULT_SEARCH_MAP_SIZE / 2)
+        val srcFlagY = src.y + (DEFAULT_SEARCH_MAP_SIZE / 2)
+        val destFlagX = dest.x + (DEFAULT_SEARCH_MAP_SIZE / 2)
+        val destFlagY = dest.y + (DEFAULT_SEARCH_MAP_SIZE / 2)
+        flags[(srcFlagY * DEFAULT_SEARCH_MAP_SIZE) + srcFlagX] = flag
+        flags[(destFlagY * DEFAULT_SEARCH_MAP_SIZE) + destFlagX] = flag
+
+        val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y, collision = InverseBlockFlagCollision(flag))
+        Assertions.assertTrue(route.success)
+        Assertions.assertTrue(route.isNotEmpty())
+        Assertions.assertEquals(dest.x, route.last().x)
+        Assertions.assertEquals(dest.y, route.last().y)
+    }
+
+    @Test
+    fun blockUnrelatedFlagInverseTraversal() {
+        val pf = SmartPathFinder()
+        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
+        val src = RouteCoordinates(0, 0)
+        val dest = RouteCoordinates(1, 0)
+        val flag = CollisionFlag.FLOOR
+        val srcFlagX = src.x + (DEFAULT_SEARCH_MAP_SIZE / 2)
+        val srcFlagY = src.y + (DEFAULT_SEARCH_MAP_SIZE / 2)
+        flags[(srcFlagY * DEFAULT_SEARCH_MAP_SIZE) + srcFlagX] = flag
+
+        val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y, collision = InverseBlockFlagCollision(flag))
+        Assertions.assertTrue(route.failed)
+        Assertions.assertTrue(route.isEmpty())
     }
 
     @ParameterizedTest
