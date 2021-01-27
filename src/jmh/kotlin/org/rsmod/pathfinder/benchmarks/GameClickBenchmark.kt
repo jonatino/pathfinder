@@ -32,7 +32,10 @@ open class GameClickAltPath : GameClickBenchmark("outofbound-path.json")
 @Warmup(iterations = 2)
 @Measurement(iterations = 3)
 @Fork(value = 1)
-abstract class GameClickBenchmark(private val parameterResourceName: String) {
+abstract class GameClickBenchmark(
+    private val parameterResourceName: String,
+    private val pathRequests: Int = 2000
+) {
 
     private lateinit var params: PathFinderParameter
     private lateinit var scope: CoroutineScope
@@ -62,8 +65,8 @@ abstract class GameClickBenchmark(private val parameterResourceName: String) {
 
     @Benchmark
     fun clientPath() {
-        val (iterations, srcX, srcY, destX, destY) = params
-        repeat(iterations) {
+        val (srcX, srcY, destX, destY) = params
+        repeat(pathRequests) {
             ClientPathfinder.findPath(
                 0, true, destY, 0, srcY, 2, 0, 0, 0, true, srcX, destX, 1
             )
@@ -72,8 +75,8 @@ abstract class GameClickBenchmark(private val parameterResourceName: String) {
 
     @Benchmark
     fun serverPathConstructOnIteration() {
-        val (iterations, srcX, srcY, destX, destY, clipFlags) = params
-        repeat(iterations) {
+        val (srcX, srcY, destX, destY, clipFlags) = params
+        repeat(pathRequests) {
             val pf = SmartPathFinder(resetOnSearch = false)
             pf.findPath(clipFlags, srcX, srcY, destX, destY)
         }
@@ -81,16 +84,16 @@ abstract class GameClickBenchmark(private val parameterResourceName: String) {
 
     @Benchmark
     fun serverPathResetOnIteration() {
-        val (iterations, srcX, srcY, destX, destY, clipFlags) = params
+        val (srcX, srcY, destX, destY, clipFlags) = params
         val pf = SmartPathFinder(resetOnSearch = true)
-        repeat(iterations) {
+        repeat(pathRequests) {
             pf.findPath(clipFlags, srcX, srcY, destX, destY)
         }
     }
 
     @Benchmark
     fun serverPathCoroutineDispatcherThreadLocal() = runBlocking {
-        val (iterations, srcX, srcY, destX, destY, clipFlags) = params
+        val (srcX, srcY, destX, destY, clipFlags) = params
         val threadLocal = ThreadLocal.withInitial { SmartPathFinder(resetOnSearch = true) }
 
         fun CoroutineScope.findPath() = launch {
@@ -99,7 +102,7 @@ abstract class GameClickBenchmark(private val parameterResourceName: String) {
         }
 
         launch(scope.coroutineContext) {
-            repeat(iterations) {
+            repeat(pathRequests) {
                 findPath()
             }
         }.join()
@@ -107,7 +110,7 @@ abstract class GameClickBenchmark(private val parameterResourceName: String) {
 
     @Benchmark
     fun serverPathCoroutineDispatcherConstruct() = runBlocking {
-        val (iterations, srcX, srcY, destX, destY, clipFlags) = params
+        val (srcX, srcY, destX, destY, clipFlags) = params
 
         fun CoroutineScope.findPath() = launch {
             val pf = SmartPathFinder(resetOnSearch = false)
@@ -115,9 +118,44 @@ abstract class GameClickBenchmark(private val parameterResourceName: String) {
         }
 
         launch(scope.coroutineContext) {
-            repeat(iterations) {
+            repeat(pathRequests) {
                 findPath()
             }
         }.join()
+    }
+}
+
+private data class PathFinderParameter(
+    val srcX: Int,
+    val srcY: Int,
+    val destX: Int,
+    val destY: Int,
+    val flags: IntArray
+) {
+
+    constructor() : this(0, 0, 0, 0, intArrayOf())
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as PathFinderParameter
+
+        if (srcX != other.srcX) return false
+        if (srcY != other.srcY) return false
+        if (destX != other.destX) return false
+        if (destY != other.destY) return false
+        if (!flags.contentEquals(other.flags)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = srcX
+        result = 31 * result + srcY
+        result = 31 * result + destX
+        result = 31 * result + destY
+        result = 31 * result + flags.contentHashCode()
+        return result
     }
 }
