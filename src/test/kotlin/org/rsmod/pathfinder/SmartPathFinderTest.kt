@@ -10,9 +10,10 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.ArgumentsProvider
 import org.junit.jupiter.params.provider.ArgumentsSource
-import org.rsmod.pathfinder.collision.InverseBlockFlagCollision
 import org.rsmod.pathfinder.flag.CollisionFlag
 import java.util.stream.Stream
+
+private const val RECT_OBJ_SHAPE = 10
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SmartPathFinderTest {
@@ -20,9 +21,9 @@ class SmartPathFinderTest {
     @Test
     fun reachEmptyTile() {
         val pf = SmartPathFinder()
-        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
         val src = RouteCoordinates(0, 0)
         val dest = RouteCoordinates(1, 0)
+        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
         val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y)
         Assertions.assertEquals(1, route.size)
         Assertions.assertEquals(dest.x, route.last().x)
@@ -32,11 +33,11 @@ class SmartPathFinderTest {
     @Test
     fun failOccupiedTile() {
         val pf = SmartPathFinder()
-        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
         val src = RouteCoordinates(0, 0)
         val dest = RouteCoordinates(1, 0)
 
         /* set flag mask to block path */
+        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
         val flagX = dest.x + (DEFAULT_SEARCH_MAP_SIZE / 2)
         val flagY = dest.y + (DEFAULT_SEARCH_MAP_SIZE / 2)
         flags[(flagY * DEFAULT_SEARCH_MAP_SIZE) + flagX] = CollisionFlag.FLOOR
@@ -61,10 +62,10 @@ class SmartPathFinderTest {
     @Test
     fun trimMaxDistanceLowerBound() {
         val pf = SmartPathFinder()
-        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
         val maxDistance = (DEFAULT_SEARCH_MAP_SIZE / 2)
         val src = RouteCoordinates(3200, 3200)
         val dest = src.translateX(-(maxDistance + 1))
+        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
         val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y)
         Assertions.assertEquals(src.x + -maxDistance, route.last().x)
         Assertions.assertEquals(dest.y, route.last().y)
@@ -80,57 +81,103 @@ class SmartPathFinderTest {
         Assertions.assertEquals(params.expectedY, route.last().y)
     }
 
+    @ParameterizedTest
+    @ArgumentsSource(DimensionParameterProvider::class)
+    fun reachObjectSuccessfully(width: Int, height: Int) {
+        val pf = SmartPathFinder()
+        val src = RouteCoordinates(0, 0)
+        val dest = RouteCoordinates(3 + width, 0) /* ensure destination is further than width */
+
+        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
+        val flagX = dest.x + (DEFAULT_SEARCH_MAP_SIZE / 2)
+        val flagY = dest.y + (DEFAULT_SEARCH_MAP_SIZE / 2)
+
+        /* mark tiles with object */
+        for (y in 0 until height) {
+            for (x in 0 until width) {
+                val index = ((flagY + y) * DEFAULT_SEARCH_MAP_SIZE) + (flagX + x)
+                flags[index] = CollisionFlag.OBJECT
+            }
+        }
+
+        val route = pf.findPath(
+            flags,
+            src.x,
+            src.y,
+            dest.x,
+            dest.y,
+            objShape = RECT_OBJ_SHAPE,
+            destWidth = width,
+            destHeight = height
+        )
+        Assertions.assertTrue(route.success)
+        Assertions.assertFalse(route.alternative)
+    }
+
     private fun loadParameters(resourceFile: String): PathParameter {
         val mapper = ObjectMapper(JsonFactory())
         val input = Route::class.java.getResourceAsStream(resourceFile)
         return input.use { mapper.readValue(it, PathParameter::class.java) }
     }
-}
 
-private object ParameterFileNameProvider : ArgumentsProvider {
+    private object ParameterFileNameProvider : ArgumentsProvider {
 
-    override fun provideArguments(context: ExtensionContext): Stream<out Arguments> {
-        return Stream.of(
-            Arguments.of("lumbridge.json"),
-            Arguments.of("barb-village.json"),
-            Arguments.of("gnome-maze.json") /* stops after 24 turns */
-        )
-    }
-}
-
-private data class PathParameter(
-    val srcX: Int,
-    val srcY: Int,
-    val destX: Int,
-    val destY: Int,
-    val expectedX: Int,
-    val expectedY: Int,
-    val flags: IntArray
-) {
-
-    constructor() : this(0, 0, 0, 0, 0, 0, intArrayOf())
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as PathParameter
-
-        if (srcX != other.srcX) return false
-        if (srcY != other.srcY) return false
-        if (destX != other.destX) return false
-        if (destY != other.destY) return false
-        if (!flags.contentEquals(other.flags)) return false
-
-        return true
+        override fun provideArguments(context: ExtensionContext): Stream<out Arguments> {
+            return Stream.of(
+                Arguments.of("lumbridge.json"),
+                Arguments.of("barb-village.json"),
+                Arguments.of("gnome-maze.json") /* stops after 24 turns */
+            )
+        }
     }
 
-    override fun hashCode(): Int {
-        var result = srcX
-        result = 31 * result + srcY
-        result = 31 * result + destX
-        result = 31 * result + destY
-        result = 31 * result + flags.contentHashCode()
-        return result
+    private object DimensionParameterProvider : ArgumentsProvider {
+
+        override fun provideArguments(context: ExtensionContext): Stream<out Arguments> {
+            return Stream.of(
+                Arguments.of(1, 1),
+                Arguments.of(2, 2),
+                Arguments.of(3, 3),
+                Arguments.of(1, 2),
+                Arguments.of(2, 1)
+            )
+        }
+    }
+
+    private data class PathParameter(
+        val srcX: Int,
+        val srcY: Int,
+        val destX: Int,
+        val destY: Int,
+        val expectedX: Int,
+        val expectedY: Int,
+        val flags: IntArray
+    ) {
+
+        constructor() : this(0, 0, 0, 0, 0, 0, intArrayOf())
+
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as PathParameter
+
+            if (srcX != other.srcX) return false
+            if (srcY != other.srcY) return false
+            if (destX != other.destX) return false
+            if (destY != other.destY) return false
+            if (!flags.contentEquals(other.flags)) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = srcX
+            result = 31 * result + srcY
+            result = 31 * result + destX
+            result = 31 * result + destY
+            result = 31 * result + flags.contentHashCode()
+            return result
+        }
     }
 }
