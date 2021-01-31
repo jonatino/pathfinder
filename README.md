@@ -55,7 +55,7 @@ fun clipFlags(centerX: Int, centerY: Int, level: Int, size: Int): IntArray {
 - **JMH:** 1.25
 - **VM:** JDK 11.0.6, Java HotSpot(TM) 64-Bit Server VM, 11.0.6+8-LTS
 
-    ### Smart Path Finder (BFS)
+    ### SmartPathFinder (BFS)
     Each benchmark calculates 2000 paths from short to out-of-bound (beyond search distance) destinations.
 
     *(These times do not include fetching the collision flags you have to feed into `SmartPathFinder::findPath` as that is up to the end-user to calculate)*
@@ -96,6 +96,19 @@ fun clipFlags(centerX: Int, centerY: Int, level: Int, size: Int): IntArray {
     - **serverPathResetOnIteration**: reset values on same `SmartPathFinder` instance to re-use every iteration.
     - **serverPathCoroutineDispatcherConstruct**: similar to `serverPathConstructOnIteration`, but using coroutines for each iteration.
     - **serverPathCoroutineDispatcherThreadLocal**: similar to `serverPathCoroutineDispatcherConstruct`, but uses `ThreadLocal` instead of always constructing a new `SmartPathFinder` instance per iteration.
+
+    ### DumbPathFinder
+    Each benchmark calculates 32767 (`Short.MAX_VALUE`) paths without any interruptions (empty collision flags used).
+    Though this data is not as useful, it provides a baseline of the cost for each steps' directional collision check.
+
+    *(As with the previous benchmark, these times do not include fetching the collision flags you have to feed into `DumbPathFinder::findPath`)*
+    ```
+    Benchmark                                                Mode  Cnt   Score    Error  Units
+
+    DumbPathFinderBenchmark.uninterruptedMaxDistance         avgt    3  30.196 ± 23.126  ms/op
+    ```
+    #### Glossary
+    - **uninterruptedMaxDistance**: destination reaches limit of `DumbPathFinder::searchMapSize` radius (~63 tiles).
 
 ## Contributing
 Pull requests are welcome on [GitHub][github].
