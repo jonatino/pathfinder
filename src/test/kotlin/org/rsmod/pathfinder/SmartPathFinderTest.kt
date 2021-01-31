@@ -83,7 +83,7 @@ class SmartPathFinderTest {
 
     @ParameterizedTest
     @ArgumentsSource(DimensionParameterProvider::class)
-    fun reachObjectSuccessfully(width: Int, height: Int) {
+    fun reachRectObjectSuccessfully(width: Int, height: Int) {
         val pf = SmartPathFinder()
         val src = RouteCoordinates(0, 0)
         val dest = RouteCoordinates(3 + width, 0) /* ensure destination is further than width */
