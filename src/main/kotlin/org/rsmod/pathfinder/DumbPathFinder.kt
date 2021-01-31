@@ -39,19 +39,7 @@ public class DumbPathFinder(public val searchMapSize: Int = DEFAULT_SEARCH_MAP_S
         val coords = mutableListOf<RouteCoordinates>()
         var success = false
         for (i in 0 until searchMapSize * searchMapSize) {
-            if (reachRectangle(
-                    clipFlags,
-                    searchMapSize,
-                    0,
-                    srcX,
-                    srcY,
-                    localDestX,
-                    localDestY,
-                    srcSize,
-                    destWidth,
-                    destHeight
-                )
-            ) {
+            if (reached(clipFlags, x, y, localDestX, localDestY, srcSize, destWidth, destHeight)) {
                 success = true
                 break
             }
@@ -119,6 +107,32 @@ public class DumbPathFinder(public val searchMapSize: Int = DEFAULT_SEARCH_MAP_S
             coords.add(RouteCoordinates(baseX + x, baseY + y))
         }
         return Route(coords, alternative = false, success = success)
+    }
+
+    private fun reached(
+        clipFlags: IntArray,
+        localSrcX: Int,
+        localSrcY: Int,
+        localDestX: Int,
+        localDestY: Int,
+        srcSize: Int = 1,
+        destWidth: Int = 0,
+        destHeight: Int = 0
+    ): Boolean = if (destWidth != 0 || destHeight != 0) {
+        reachRectangle(
+            clipFlags = clipFlags,
+            mapSize = searchMapSize,
+            accessBitMask = 0,
+            srcX = localSrcX,
+            srcY = localSrcY,
+            destX = localDestX,
+            destY = localDestY,
+            srcSize = srcSize,
+            destWidth = destWidth,
+            destHeight = destHeight
+        )
+    } else {
+        localSrcX == localDestX && localSrcY == localDestY
     }
 
     private fun Direction.isBlocked(
