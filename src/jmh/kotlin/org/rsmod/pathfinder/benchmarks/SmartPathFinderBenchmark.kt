@@ -21,10 +21,10 @@ import org.rsmod.pathfinder.SmartPathFinder
 import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.TimeUnit
 
-open class GameClickShortPath : GameClickBenchmark("short-path.json")
-open class GameClickMedPath : GameClickBenchmark("med-path.json")
-open class GameClickLongPath : GameClickBenchmark("long-path.json")
-open class GameClickAltPath : GameClickBenchmark("outofbound-path.json")
+open class GameClickShortPath : SmartPathFinderBenchmark("short-path.json")
+open class GameClickMedPath : SmartPathFinderBenchmark("med-path.json")
+open class GameClickLongPath : SmartPathFinderBenchmark("long-path.json")
+open class GameClickAltPath : SmartPathFinderBenchmark("outofbound-path.json")
 
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.AverageTime)
@@ -32,7 +32,7 @@ open class GameClickAltPath : GameClickBenchmark("outofbound-path.json")
 @Warmup(iterations = 2)
 @Measurement(iterations = 3)
 @Fork(value = 1)
-abstract class GameClickBenchmark(
+abstract class SmartPathFinderBenchmark(
     private val parameterResourceName: String,
     private val pathRequests: Int = 2000
 ) {
