@@ -33,6 +33,7 @@ private const val NO_STRATEGY = 3
  */
 private val TURN_COORDS = RouteCoordinates(0)
 
+@Suppress("MemberVisibilityCanBePrivate")
 public class SmartPathFinder(
     private val resetOnSearch: Boolean = DEFAULT_RESET_ON_SEARCH,
     public val searchMapSize: Int = DEFAULT_SEARCH_MAP_SIZE,
