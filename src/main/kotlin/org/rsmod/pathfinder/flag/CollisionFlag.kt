@@ -1,5 +1,6 @@
 package org.rsmod.pathfinder.flag
 
+@Suppress("UNUSED", "MemberVisibilityCanBePrivate")
 public object CollisionFlag {
 
     public const val WALL_NORTH_WEST: Int = 0x1
