@@ -11,13 +11,18 @@ import org.junit.jupiter.params.provider.ArgumentsSource
 import org.rsmod.pathfinder.flag.CollisionFlag
 import java.util.stream.Stream
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 class DumbPathFinderTest {
+
+    private val pf = DumbPathFinder()
+
+    private val flags = IntArray(pf.searchMapSize * pf.searchMapSize)
+
+    private val halfMap: Int
+        get() = pf.searchMapSize / 2
 
     @Test
     fun reachEmptyTile() {
-        val pf = DumbPathFinder()
-        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
         val src = RouteCoordinates(0, 0)
         val dest = RouteCoordinates(1, 0)
         val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y)
@@ -28,14 +33,12 @@ class DumbPathFinderTest {
 
     @Test
     fun failOccupiedTile() {
-        val pf = DumbPathFinder()
         val src = RouteCoordinates(0, 0)
         val dest = RouteCoordinates(1, 0)
 
         /* set flag mask to block path */
-        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
-        val flagX = dest.x + (DEFAULT_SEARCH_MAP_SIZE / 2)
-        val flagY = dest.y + (DEFAULT_SEARCH_MAP_SIZE / 2)
+        val flagX = halfMap + 1
+        val flagY = halfMap
         flags[(flagY * DEFAULT_SEARCH_MAP_SIZE) + flagX] = CollisionFlag.FLOOR
 
         val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y)
@@ -45,14 +48,12 @@ class DumbPathFinderTest {
 
     @Test
     fun fullyBlockedByObject() {
-        val pf = DumbPathFinder()
         val src = RouteCoordinates(0, 0)
         val dest = RouteCoordinates(2, 0)
 
         /* set flag mask to block path */
-        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
-        val flagX = (dest.x - 1) + (DEFAULT_SEARCH_MAP_SIZE / 2)
-        val flagY = dest.y + (DEFAULT_SEARCH_MAP_SIZE / 2)
+        val flagX = halfMap + 1
+        val flagY = halfMap
         flags[(flagY * DEFAULT_SEARCH_MAP_SIZE) + flagX] = CollisionFlag.OBJECT
 
         val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y)
@@ -62,14 +63,12 @@ class DumbPathFinderTest {
 
     @Test
     fun partiallyBlockedByObject() {
-        val pf = DumbPathFinder()
         val src = RouteCoordinates(0, 0)
         val dest = RouteCoordinates(3, 0)
 
         /* set flag mask to block path */
-        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
-        val flagX = (dest.x - 1) + (DEFAULT_SEARCH_MAP_SIZE / 2)
-        val flagY = dest.y + (DEFAULT_SEARCH_MAP_SIZE / 2)
+        val flagX = halfMap + 2
+        val flagY = halfMap
         flags[(flagY * DEFAULT_SEARCH_MAP_SIZE) + flagX] = CollisionFlag.OBJECT
 
         val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y)
@@ -84,13 +83,11 @@ class DumbPathFinderTest {
     @ParameterizedTest
     @ArgumentsSource(DimensionParameterProvider::class)
     fun reachRectObjectSuccessfully(width: Int, height: Int) {
-        val pf = DumbPathFinder()
         val src = RouteCoordinates(0, 0)
         val dest = RouteCoordinates(3 + width, 0) /* ensure destination is further than width */
 
-        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
-        val flagX = dest.x + (DEFAULT_SEARCH_MAP_SIZE / 2)
-        val flagY = dest.y + (DEFAULT_SEARCH_MAP_SIZE / 2)
+        val flagX = halfMap + 3 + width
+        val flagY = halfMap
 
         /* mark tiles with object */
         for (y in 0 until height) {

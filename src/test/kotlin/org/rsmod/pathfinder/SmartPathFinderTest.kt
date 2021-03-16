@@ -15,15 +15,20 @@ import java.util.stream.Stream
 
 private const val RECT_OBJ_SHAPE = 10
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(TestInstance.Lifecycle.PER_METHOD)
 class SmartPathFinderTest {
+
+    private val pf = SmartPathFinder()
+
+    private val flags = IntArray(pf.searchMapSize * pf.searchMapSize)
+
+    private val halfMap: Int
+        get() = pf.searchMapSize / 2
 
     @Test
     fun reachEmptyTile() {
-        val pf = SmartPathFinder()
         val src = RouteCoordinates(0, 0)
-        val dest = RouteCoordinates(1, 0)
-        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
+        val dest = src.translate(1, 0)
         val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y)
         Assertions.assertEquals(1, route.size)
         Assertions.assertEquals(dest.x, route.last().x)
@@ -32,14 +37,12 @@ class SmartPathFinderTest {
 
     @Test
     fun failOccupiedTile() {
-        val pf = SmartPathFinder()
         val src = RouteCoordinates(0, 0)
-        val dest = RouteCoordinates(1, 0)
+        val dest = src.translate(1, 0)
 
         /* set flag mask to block path */
-        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
-        val flagX = dest.x + (DEFAULT_SEARCH_MAP_SIZE / 2)
-        val flagY = dest.y + (DEFAULT_SEARCH_MAP_SIZE / 2)
+        val flagX = halfMap + 1
+        val flagY = halfMap
         flags[(flagY * DEFAULT_SEARCH_MAP_SIZE) + flagX] = CollisionFlag.FLOOR
 
         val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y)
@@ -48,26 +51,26 @@ class SmartPathFinderTest {
     }
 
     @Test
+    fun failBlockedDirectionPath() {
+        val src = RouteCoordinates(0, 0)
+        val dest = src.translate(1, 0)
+    }
+
+    @Test
     fun trimMaxDistanceUpperBound() {
-        val pf = SmartPathFinder()
-        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
-        val maxDistance = (DEFAULT_SEARCH_MAP_SIZE / 2)
         val src = RouteCoordinates(3200, 3200)
-        val dest = src.translateX(maxDistance)
+        val dest = src.translateX(halfMap)
         val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y)
-        Assertions.assertEquals(src.x + maxDistance - 1, route.last().x)
+        Assertions.assertEquals(src.x + halfMap - 1, route.last().x)
         Assertions.assertEquals(dest.y, route.last().y)
     }
 
     @Test
     fun trimMaxDistanceLowerBound() {
-        val pf = SmartPathFinder()
-        val maxDistance = (DEFAULT_SEARCH_MAP_SIZE / 2)
         val src = RouteCoordinates(3200, 3200)
-        val dest = src.translateX(-(maxDistance + 1))
-        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
+        val dest = src.translateX(-(halfMap + 1))
         val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y)
-        Assertions.assertEquals(src.x + -maxDistance, route.last().x)
+        Assertions.assertEquals(src.x + -halfMap, route.last().x)
         Assertions.assertEquals(dest.y, route.last().y)
     }
 
@@ -84,13 +87,11 @@ class SmartPathFinderTest {
     @ParameterizedTest
     @ArgumentsSource(DimensionParameterProvider::class)
     fun reachRectObjectSuccessfully(width: Int, height: Int) {
-        val pf = SmartPathFinder()
         val src = RouteCoordinates(0, 0)
-        val dest = RouteCoordinates(3 + width, 0) /* ensure destination is further than width */
+        val dest = src.translate(3 + width, 0) /* ensure destination is further than width */
 
-        val flags = IntArray(DEFAULT_SEARCH_MAP_SIZE * DEFAULT_SEARCH_MAP_SIZE)
-        val flagX = dest.x + (DEFAULT_SEARCH_MAP_SIZE / 2)
-        val flagY = dest.y + (DEFAULT_SEARCH_MAP_SIZE / 2)
+        val flagX = halfMap
+        val flagY = halfMap + 3 + width
 
         /* mark tiles with object */
         for (y in 0 until height) {
