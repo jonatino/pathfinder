@@ -34,77 +34,77 @@ public class DumbPathFinder(public val searchMapSize: Int = DEFAULT_SEARCH_MAP_S
         val localSrcY = srcY - baseY
         val localDestX = destX - baseX
         val localDestY = destY - baseY
-        var x = localSrcX
-        var y = localSrcY
+        var currX = localSrcX
+        var currY = localSrcY
         val coords = mutableListOf<RouteCoordinates>()
         var success = false
         for (i in 0 until searchMapSize * searchMapSize) {
-            if (reached(clipFlags, x, y, localDestX, localDestY, srcSize, destWidth, destHeight)) {
+            if (reached(clipFlags, currX, currY, localDestX, localDestY, srcSize, destWidth, destHeight)) {
                 success = true
                 break
             }
-            val startX = x
-            val startY = y
-            val dir = getDirection(x, y, localDestX, localDestY) ?: break
-            val blocked = dir.isBlocked(clipFlags, x, y, srcSize, collision)
+            val startX = currX
+            val startY = currY
+            val dir = getDirection(currX, currY, localDestX, localDestY) ?: break
+            val blocked = dir.isBlocked(clipFlags, currX, currY, srcSize, collision)
             if (dir == South && !blocked) {
-                y--
+                currY--
             } else if (dir == North && !blocked) {
-                y++
+                currY++
             } else if (dir == West && !blocked) {
-                x--
+                currX--
             } else if (dir == East && !blocked) {
-                x++
+                currX++
             } else if (dir == SouthWest) {
                 if (blocked) {
-                    if (!South.isBlocked(clipFlags, x, y, srcSize, collision)) {
-                        y--
-                    } else if (!West.isBlocked(clipFlags, x, y, srcSize, collision)) {
-                        x--
+                    if (!South.isBlocked(clipFlags, currX, currY, srcSize, collision)) {
+                        currY--
+                    } else if (!West.isBlocked(clipFlags, currX, currY, srcSize, collision)) {
+                        currX--
                     }
                 } else {
-                    x--
-                    y--
+                    currX--
+                    currY--
                 }
             } else if (dir == NorthWest) {
                 if (blocked) {
-                    if (!North.isBlocked(clipFlags, x, y, srcSize, collision)) {
-                        y++
-                    } else if (!West.isBlocked(clipFlags, x, y, srcSize, collision)) {
-                        x--
+                    if (!North.isBlocked(clipFlags, currX, currY, srcSize, collision)) {
+                        currY++
+                    } else if (!West.isBlocked(clipFlags, currX, currY, srcSize, collision)) {
+                        currX--
                     }
                 } else {
-                    x--
-                    y++
+                    currX--
+                    currY++
                 }
             } else if (dir == SouthEast) {
                 if (blocked) {
-                    if (!South.isBlocked(clipFlags, x, y, srcSize, collision)) {
-                        y--
-                    } else if (!East.isBlocked(clipFlags, x, y, srcSize, collision)) {
-                        x++
+                    if (!South.isBlocked(clipFlags, currX, currY, srcSize, collision)) {
+                        currY--
+                    } else if (!East.isBlocked(clipFlags, currX, currY, srcSize, collision)) {
+                        currX++
                     }
                 } else {
-                    x++
-                    y--
+                    currX++
+                    currY--
                 }
             } else if (dir == NorthEast) {
                 if (blocked) {
-                    if (!North.isBlocked(clipFlags, x, y, srcSize, collision)) {
-                        y++
-                    } else if (!East.isBlocked(clipFlags, x, y, srcSize, collision)) {
-                        x++
+                    if (!North.isBlocked(clipFlags, currX, currY, srcSize, collision)) {
+                        currY++
+                    } else if (!East.isBlocked(clipFlags, currX, currY, srcSize, collision)) {
+                        currX++
                     }
                 } else {
-                    x++
-                    y++
+                    currX++
+                    currY++
                 }
             }
-            if (startX == x && startY == y) {
+            if (startX == currX && startY == currY) {
                 /* no valid tile found */
                 break
             }
-            coords.add(RouteCoordinates(baseX + x, baseY + y))
+            coords.add(RouteCoordinates(baseX + currX, baseY + currY))
         }
         return Route(coords, alternative = false, success = success)
     }
