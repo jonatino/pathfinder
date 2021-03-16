@@ -51,12 +51,6 @@ class SmartPathFinderTest {
     }
 
     @Test
-    fun failBlockedDirectionPath() {
-        val src = RouteCoordinates(0, 0)
-        val dest = src.translate(1, 0)
-    }
-
-    @Test
     fun trimMaxDistanceUpperBound() {
         val src = RouteCoordinates(3200, 3200)
         val dest = src.translateX(halfMap)
@@ -72,6 +66,21 @@ class SmartPathFinderTest {
         val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y)
         Assertions.assertEquals(src.x + -halfMap, route.last().x)
         Assertions.assertEquals(dest.y, route.last().y)
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(DirectionProvider::class)
+    internal fun failBlockedDirectionPath(dir: CardinalDirection) {
+        val src = RouteCoordinates(3200, 3200)
+        val dest = src.translate(dir.offX * 1, dir.offY * 1)
+
+        /* set flag mask to block path */
+        val flagX = halfMap + dir.offX
+        val flagY = halfMap + dir.offY
+        flags[(flagY * pf.searchMapSize) + flagX] = CollisionFlag.OBJECT
+
+        val route = pf.findPath(flags, src.x, src.y, dest.x, dest.y)
+        Assertions.assertTrue(route.isEmpty())
     }
 
     @ParameterizedTest
@@ -141,6 +150,18 @@ class SmartPathFinderTest {
                 Arguments.of(3, 3),
                 Arguments.of(1, 2),
                 Arguments.of(2, 1)
+            )
+        }
+    }
+
+    private object DirectionProvider : ArgumentsProvider {
+
+        override fun provideArguments(context: ExtensionContext): Stream<out Arguments> {
+            return Stream.of(
+                Arguments.of(CardinalDirection.North),
+                Arguments.of(CardinalDirection.South),
+                Arguments.of(CardinalDirection.East),
+                Arguments.of(CardinalDirection.West)
             )
         }
     }
