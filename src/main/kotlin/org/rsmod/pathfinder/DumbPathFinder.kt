@@ -325,10 +325,4 @@ public class DumbPathFinder(public val searchMapSize: Int = DEFAULT_SEARCH_MAP_S
         val index = (y * searchMapSize) + x
         return this[index]
     }
-
-    @Suppress("NOTHING_TO_INLINE")
-    private inline operator fun IntArray.set(x: Int, y: Int, value: Int) {
-        val index = (y * searchMapSize) + x
-        this[index] = value
-    }
 }
