@@ -70,7 +70,7 @@ class SmartPathFinderTest {
 
     @ParameterizedTest
     @ArgumentsSource(DirectionProvider::class)
-    internal fun failBlockedDirectionPath(dir: CardinalDirection) {
+    internal fun failBlockedDirectionPath(dir: Direction) {
         val src = RouteCoordinates(3200, 3200)
         val dest = src.translate(dir.offX * 1, dir.offY * 1)
 
@@ -158,10 +158,10 @@ class SmartPathFinderTest {
 
         override fun provideArguments(context: ExtensionContext): Stream<out Arguments> {
             return Stream.of(
-                Arguments.of(CardinalDirection.North),
-                Arguments.of(CardinalDirection.South),
-                Arguments.of(CardinalDirection.East),
-                Arguments.of(CardinalDirection.West)
+                Arguments.of(North),
+                Arguments.of(South),
+                Arguments.of(East),
+                Arguments.of(West)
             )
         }
     }

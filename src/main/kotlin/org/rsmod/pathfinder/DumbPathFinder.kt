@@ -5,16 +5,6 @@ import org.rsmod.pathfinder.collision.CollisionStrategies
 import org.rsmod.pathfinder.collision.CollisionStrategy
 import org.rsmod.pathfinder.flag.CollisionFlag
 
-private sealed class Direction
-private object South : Direction()
-private object North : Direction()
-private object West : Direction()
-private object East : Direction()
-private object NorthEast : Direction()
-private object SouthEast : Direction()
-private object NorthWest : Direction()
-private object SouthWest : Direction()
-
 @Suppress("MemberVisibilityCanBePrivate")
 public class DumbPathFinder(public val searchMapSize: Int = DEFAULT_SEARCH_MAP_SIZE) {
 
