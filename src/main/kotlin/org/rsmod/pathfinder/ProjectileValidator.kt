@@ -33,7 +33,7 @@ import kotlin.math.abs
 public class ProjectileValidator(public val searchMapSize: Int) {
 
     public fun isValid(
-        clipFlags: IntArray,
+        flags: IntArray,
         srcX: Int,
         srcY: Int,
         destX: Int,
@@ -42,12 +42,12 @@ public class ProjectileValidator(public val searchMapSize: Int) {
         destWidth: Int = 0,
         destHeight: Int = 0
     ): Boolean {
-        val route = rayCast(clipFlags, srcX, srcY, destX, destY, srcSize, destWidth, destHeight)
+        val route = rayCast(flags, srcX, srcY, destX, destY, srcSize, destWidth, destHeight)
         return route.success
     }
 
     public fun rayCast(
-        clipFlags: IntArray,
+        flags: IntArray,
         srcX: Int,
         srcY: Int,
         destX: Int,
@@ -93,14 +93,14 @@ public class ProjectileValidator(public val searchMapSize: Int) {
                 currX += offsetX
                 val currY = scaleDown(scaledY)
 
-                if (clipFlags.isFlagged(currX, currY, xFlags)) {
+                if (flags.isFlagged(currX, currY, xFlags)) {
                     return Route(coords, alternative = false, success = false)
                 }
 
                 scaledY += tangent
 
                 val nextY = scaleDown(scaledY)
-                if (nextY != currY && clipFlags.isFlagged(currX, nextY, yFlags)) {
+                if (nextY != currY && flags.isFlagged(currX, nextY, yFlags)) {
                     return Route(coords, alternative = false, success = false)
                 }
             }
@@ -116,14 +116,14 @@ public class ProjectileValidator(public val searchMapSize: Int) {
                 currY += offsetY
                 val currX = scaleDown(scaledX)
 
-                if (clipFlags.isFlagged(currX, currY, yFlags)) {
+                if (flags.isFlagged(currX, currY, yFlags)) {
                     return Route(coords, alternative = false, success = false)
                 }
 
                 scaledX += tangent
 
                 val nextX = scaleDown(scaledX)
-                if (nextX != currX && clipFlags.isFlagged(nextX, currY, xFlags)) {
+                if (nextX != currX && flags.isFlagged(nextX, currY, xFlags)) {
                     return Route(coords, alternative = false, success = false)
                 }
             }

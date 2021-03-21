@@ -3,7 +3,7 @@ package org.rsmod.pathfinder.bound
 import kotlin.math.min
 
 internal fun reachRectangle(
-    clipFlags: IntArray,
+    flags: IntArray,
     mapSize: Int,
     accessBitMask: Int,
     srcX: Int,
@@ -17,7 +17,7 @@ internal fun reachRectangle(
     srcSize > 1 -> {
         collides(srcX, srcY, destX, destY, srcSize, srcSize, destWidth, destHeight)
             || reachRectangleN(
-            clipFlags,
+            flags,
             mapSize,
             accessBitMask,
             srcX,
@@ -30,7 +30,7 @@ internal fun reachRectangle(
             destHeight
         )
     }
-    else -> reachRectangle1(clipFlags, mapSize, accessBitMask, srcX, srcY, destX, destY, destWidth, destHeight)
+    else -> reachRectangle1(flags, mapSize, accessBitMask, srcX, srcY, destX, destY, destWidth, destHeight)
 }
 
 private fun collides(
@@ -49,7 +49,7 @@ private fun collides(
 }
 
 private fun reachRectangle1(
-    clipFlags: IntArray,
+    flags: IntArray,
     mapSize: Int,
     accessBitMask: Int,
     srcX: Int,
@@ -66,28 +66,28 @@ private fun reachRectangle1(
         return true
 
     if (srcX == destX - 1 && srcY >= destY && srcY <= north
-        && (flag(clipFlags, mapSize, srcX, srcY) and 0x8) == 0
+        && (flag(flags, mapSize, srcX, srcY) and 0x8) == 0
         && (accessBitMask and 0x8) == 0
     ) return true
 
     if (srcX == east + 1 && srcY >= destY && srcY <= north
-        && (flag(clipFlags, mapSize, srcX, srcY) and 0x80) == 0
+        && (flag(flags, mapSize, srcX, srcY) and 0x80) == 0
         && (accessBitMask and 0x2) == 0
     ) return true
 
     if (srcY + 1 == destY && srcX >= destX && srcX <= east
-        && (flag(clipFlags, mapSize, srcX, srcY) and 0x2) == 0
+        && (flag(flags, mapSize, srcX, srcY) and 0x2) == 0
         && (accessBitMask and 0x4) == 0
 
     ) return true
 
     return srcY == north + 1 && srcX >= destX && srcX <= east
-        && (flag(clipFlags, mapSize, srcX, srcY) and 0x20) == 0
+        && (flag(flags, mapSize, srcX, srcY) and 0x20) == 0
         && (accessBitMask and 0x1) == 0
 }
 
 private fun reachRectangleN(
-    clipFlags: IntArray,
+    flags: IntArray,
     mapSize: Int,
     accessBitMask: Int,
     srcX: Int,
@@ -107,14 +107,14 @@ private fun reachRectangleN(
         if (destY == srcNorth && (accessBitMask and 0x4) == 0) {
             val minEast = min(srcEast, destEast)
             for (x in srcX until minEast) {
-                if ((flag(clipFlags, mapSize, x, srcNorth - 1) and 0x2) == 0) {
+                if ((flag(flags, mapSize, x, srcNorth - 1) and 0x2) == 0) {
                     return true
                 }
             }
         } else if (destNorth == srcY && (accessBitMask and 0x1) == 0) {
             val minEastX = min(srcEast, destEast)
             for (x in srcX until minEastX) {
-                if ((flag(clipFlags, mapSize, x, srcY) and 0x20) == 0) {
+                if ((flag(flags, mapSize, x, srcY) and 0x20) == 0) {
                     return true
                 }
             }
@@ -122,13 +122,13 @@ private fun reachRectangleN(
     } else if (srcEast in (destX + 1)..destEast) {
         if (destY == srcNorth && (accessBitMask and 0x4) == 0) {
             for (x in destX until srcEast) {
-                if ((flag(clipFlags, mapSize, x, srcNorth - 1) and 0x2) == 0) {
+                if ((flag(flags, mapSize, x, srcNorth - 1) and 0x2) == 0) {
                     return true
                 }
             }
         } else if (srcY == destNorth && (accessBitMask and 0x1) == 0) {
             for (x in destX until srcEast) {
-                if ((flag(clipFlags, mapSize, x, srcY) and 0x2) == 0) {
+                if ((flag(flags, mapSize, x, srcY) and 0x2) == 0) {
                     return true
                 }
             }
@@ -137,14 +137,14 @@ private fun reachRectangleN(
         if (srcEast == destX && (accessBitMask and 0x8) == 0) {
             val minNorthY = min(srcNorth, destNorth)
             for (y in srcY until minNorthY) {
-                if ((flag(clipFlags, mapSize, srcEast - 1, y) and 0x8) == 0) {
+                if ((flag(flags, mapSize, srcEast - 1, y) and 0x8) == 0) {
                     return true
                 }
             }
         } else if (destEast == srcX && (accessBitMask and 0x2) == 0) {
             val minNorthY = min(srcNorth, destNorth)
             for (y in srcY until minNorthY) {
-                if ((flag(clipFlags, mapSize, srcX, y) and 0x80) == 0) {
+                if ((flag(flags, mapSize, srcX, y) and 0x80) == 0) {
                     return true
                 }
             }
@@ -152,13 +152,13 @@ private fun reachRectangleN(
     } else if (srcNorth in (destY + 1)..destNorth) {
         if (destX == srcEast && (accessBitMask and 0x8) == 0) {
             for (y in destY until srcNorth) {
-                if ((flag(clipFlags, mapSize, srcEast - 1, y) and 0x8) == 0) {
+                if ((flag(flags, mapSize, srcEast - 1, y) and 0x8) == 0) {
                     return true
                 }
             }
         } else if (destEast == srcX && (accessBitMask and 0x2) == 0) {
             for (y in destY until srcNorth) {
-                if ((flag(clipFlags, mapSize, srcX, y) and 0x80) == 0) {
+                if ((flag(flags, mapSize, srcX, y) and 0x80) == 0) {
                     return true
                 }
             }

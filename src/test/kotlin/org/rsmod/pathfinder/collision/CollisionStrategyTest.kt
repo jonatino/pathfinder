@@ -82,7 +82,7 @@ class CollisionStrategyTest {
 private data class CollisionParameters(
     val src: RouteCoordinates,
     val dest: RouteCoordinates,
-    val clipFlags: IntArray
+    val flags: IntArray
 ) {
 
     override fun equals(other: Any?): Boolean {
@@ -93,7 +93,7 @@ private data class CollisionParameters(
 
         if (src != other.src) return false
         if (dest != other.dest) return false
-        if (!clipFlags.contentEquals(other.clipFlags)) return false
+        if (!flags.contentEquals(other.flags)) return false
 
         return true
     }
@@ -101,7 +101,7 @@ private data class CollisionParameters(
     override fun hashCode(): Int {
         var result = src.hashCode()
         result = 31 * result + dest.hashCode()
-        result = 31 * result + clipFlags.contentHashCode()
+        result = 31 * result + flags.contentHashCode()
         return result
     }
 }

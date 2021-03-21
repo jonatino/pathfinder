@@ -75,30 +75,30 @@ abstract class SmartPathFinderBenchmark(
 
     @Benchmark
     fun serverPathConstructOnIteration() {
-        val (srcX, srcY, destX, destY, clipFlags) = params
+        val (srcX, srcY, destX, destY, flags) = params
         repeat(pathRequests) {
             val pf = SmartPathFinder(resetOnSearch = false)
-            pf.findPath(clipFlags, srcX, srcY, destX, destY)
+            pf.findPath(flags, srcX, srcY, destX, destY)
         }
     }
 
     @Benchmark
     fun serverPathResetOnIteration() {
-        val (srcX, srcY, destX, destY, clipFlags) = params
+        val (srcX, srcY, destX, destY, flags) = params
         val pf = SmartPathFinder(resetOnSearch = true)
         repeat(pathRequests) {
-            pf.findPath(clipFlags, srcX, srcY, destX, destY)
+            pf.findPath(flags, srcX, srcY, destX, destY)
         }
     }
 
     @Benchmark
     fun serverPathCoroutineDispatcherThreadLocal() = runBlocking {
-        val (srcX, srcY, destX, destY, clipFlags) = params
+        val (srcX, srcY, destX, destY, flags) = params
         val threadLocal = ThreadLocal.withInitial { SmartPathFinder(resetOnSearch = true) }
 
         fun CoroutineScope.findPath() = launch {
             val pf = threadLocal.get()
-            pf.findPath(clipFlags, srcX, srcY, destX, destY)
+            pf.findPath(flags, srcX, srcY, destX, destY)
         }
 
         launch(scope.coroutineContext) {
@@ -110,11 +110,11 @@ abstract class SmartPathFinderBenchmark(
 
     @Benchmark
     fun serverPathCoroutineDispatcherConstruct() = runBlocking {
-        val (srcX, srcY, destX, destY, clipFlags) = params
+        val (srcX, srcY, destX, destY, flags) = params
 
         fun CoroutineScope.findPath() = launch {
             val pf = SmartPathFinder(resetOnSearch = false)
-            pf.findPath(clipFlags, srcX, srcY, destX, destY)
+            pf.findPath(flags, srcX, srcY, destX, destY)
         }
 
         launch(scope.coroutineContext) {

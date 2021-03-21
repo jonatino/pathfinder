@@ -26,11 +26,11 @@ open class DumbPathFinderBenchmark(
     private val pathRequests: Int = Short.MAX_VALUE.toInt()
 ) {
 
-    private lateinit var clipFlags: IntArray
+    private lateinit var flags: IntArray
 
     @Setup
     fun setup() {
-        clipFlags = IntArray(SEARCH_SIZE * SEARCH_SIZE)
+        flags = IntArray(SEARCH_SIZE * SEARCH_SIZE)
     }
 
     @Benchmark
@@ -39,7 +39,7 @@ open class DumbPathFinderBenchmark(
         val src = RouteCoordinates(3200, 3200)
         val dest = src.translate(63, 63)
         repeat(pathRequests) {
-            pf.findPath(clipFlags, src.x, src.y, dest.x, dest.y)
+            pf.findPath(flags, src.x, src.y, dest.x, dest.y)
         }
     }
 }
