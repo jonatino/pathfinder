@@ -709,27 +709,9 @@ public class SmartPathFinder(
     }
 
     @Suppress("NOTHING_TO_INLINE")
-    private inline operator fun ByteArray.get(x: Int, y: Int): Byte {
-        val index = (y * searchMapSize) + x
-        return this[index]
-    }
-
-    @Suppress("NOTHING_TO_INLINE")
-    private inline operator fun ShortArray.get(x: Int, y: Int): Short {
-        val index = (y * searchMapSize) + x
-        return this[index]
-    }
-
-    @Suppress("NOTHING_TO_INLINE")
     private inline operator fun IntArray.get(x: Int, y: Int): Int {
         val index = (y * searchMapSize) + x
         return this[index]
-    }
-
-    @Suppress("NOTHING_TO_INLINE")
-    private inline operator fun IntArray.set(x: Int, y: Int, value: Int) {
-        val index = (y * searchMapSize) + x
-        this[index] = value
     }
 
     private val Int.exitStrategy: Int
