@@ -228,8 +228,8 @@ public class SmartPathFinder(
             y = currentY
             clipFlag = CollisionFlag.BLOCK_EAST
             dirFlag = DirectionFlag.WEST
-            if (currentX < relativeSearchSize && directions[x, y] == 0
-                && collision.canMove(flags[x, y], clipFlag)
+            if (currentX < relativeSearchSize && directions[x, y] == 0 &&
+                collision.canMove(flags[x, y], clipFlag)
             ) {
                 setAndIncrementWriterBuf(x, y)
                 directions[x, y] = dirFlag
@@ -252,8 +252,8 @@ public class SmartPathFinder(
             y = currentY + 1
             clipFlag = CollisionFlag.BLOCK_NORTH
             dirFlag = DirectionFlag.SOUTH
-            if (currentY < relativeSearchSize && directions[x, y] == 0
-                && collision.canMove(flags[x, y], clipFlag)
+            if (currentY < relativeSearchSize && directions[x, y] == 0 &&
+                collision.canMove(flags[x, y], clipFlag)
             ) {
                 setAndIncrementWriterBuf(x, y)
                 directions[x, y] = dirFlag
@@ -264,10 +264,10 @@ public class SmartPathFinder(
             x = currentX - 1
             y = currentY - 1
             dirFlag = DirectionFlag.NORTH_EAST
-            if (currentX > 0 && currentY > 0 && directions[x, y] == 0
-                && collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST)
-                && collision.canMove(flags[x, currentY], CollisionFlag.BLOCK_WEST)
-                && collision.canMove(flags[currentX, y], CollisionFlag.BLOCK_SOUTH)
+            if (currentX > 0 && currentY > 0 && directions[x, y] == 0 &&
+                collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST) &&
+                collision.canMove(flags[x, currentY], CollisionFlag.BLOCK_WEST) &&
+                collision.canMove(flags[currentX, y], CollisionFlag.BLOCK_SOUTH)
             ) {
                 setAndIncrementWriterBuf(x, y)
                 directions[x, y] = dirFlag
@@ -278,10 +278,10 @@ public class SmartPathFinder(
             x = currentX + 1
             y = currentY - 1
             dirFlag = DirectionFlag.NORTH_WEST
-            if (currentX < relativeSearchSize && currentY > 0 && directions[x, y] == 0
-                && collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_EAST)
-                && collision.canMove(flags[x, currentY], CollisionFlag.BLOCK_EAST)
-                && collision.canMove(flags[currentX, y], CollisionFlag.BLOCK_SOUTH)
+            if (currentX < relativeSearchSize && currentY > 0 && directions[x, y] == 0 &&
+                collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_EAST) &&
+                collision.canMove(flags[x, currentY], CollisionFlag.BLOCK_EAST) &&
+                collision.canMove(flags[currentX, y], CollisionFlag.BLOCK_SOUTH)
             ) {
                 setAndIncrementWriterBuf(x, y)
                 directions[x, y] = dirFlag
@@ -292,10 +292,10 @@ public class SmartPathFinder(
             x = currentX - 1
             y = currentY + 1
             dirFlag = DirectionFlag.SOUTH_EAST
-            if (currentX > 0 && currentY < relativeSearchSize && directions[x, y] == 0
-                && collision.canMove(flags[x, y], CollisionFlag.BLOCK_NORTH_WEST)
-                && collision.canMove(flags[x, currentY], CollisionFlag.BLOCK_WEST)
-                && collision.canMove(flags[currentX, y], CollisionFlag.BLOCK_NORTH)
+            if (currentX > 0 && currentY < relativeSearchSize && directions[x, y] == 0 &&
+                collision.canMove(flags[x, y], CollisionFlag.BLOCK_NORTH_WEST) &&
+                collision.canMove(flags[x, currentY], CollisionFlag.BLOCK_WEST) &&
+                collision.canMove(flags[currentX, y], CollisionFlag.BLOCK_NORTH)
             ) {
                 setAndIncrementWriterBuf(x, y)
                 directions[x, y] = dirFlag
@@ -306,10 +306,10 @@ public class SmartPathFinder(
             x = currentX + 1
             y = currentY + 1
             dirFlag = DirectionFlag.SOUTH_WEST
-            if (currentX < relativeSearchSize && currentY < relativeSearchSize && directions[x, y] == 0
-                && collision.canMove(flags[x, y], CollisionFlag.BLOCK_NORTH_EAST)
-                && collision.canMove(flags[x, currentY], CollisionFlag.BLOCK_EAST)
-                && collision.canMove(flags[currentX, y], CollisionFlag.BLOCK_NORTH)
+            if (currentX < relativeSearchSize && currentY < relativeSearchSize && directions[x, y] == 0 &&
+                collision.canMove(flags[x, y], CollisionFlag.BLOCK_NORTH_EAST) &&
+                collision.canMove(flags[x, currentY], CollisionFlag.BLOCK_EAST) &&
+                collision.canMove(flags[currentX, y], CollisionFlag.BLOCK_NORTH)
             ) {
                 setAndIncrementWriterBuf(x, y)
                 directions[x, y] = dirFlag
@@ -363,9 +363,9 @@ public class SmartPathFinder(
             x = currentX - 1
             y = currentY
             dirFlag = DirectionFlag.EAST
-            if (currentX > 0 && directions[x, y] == 0
-                && collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST)
-                && collision.canMove(flags[x, currentY + 1], CollisionFlag.BLOCK_NORTH_WEST)
+            if (currentX > 0 && directions[x, y] == 0 &&
+                collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST) &&
+                collision.canMove(flags[x, currentY + 1], CollisionFlag.BLOCK_NORTH_WEST)
             ) {
                 setAndIncrementWriterBuf(x, y)
                 directions[x, y] = dirFlag
@@ -376,9 +376,9 @@ public class SmartPathFinder(
             x = currentX + 1
             y = currentY
             dirFlag = DirectionFlag.WEST
-            if (currentX < relativeSearchSize && directions[x, y] == 0
-                && collision.canMove(flags[currentX + 2, y], CollisionFlag.BLOCK_SOUTH_EAST)
-                && collision.canMove(flags[currentX + 2, currentY + 1], CollisionFlag.BLOCK_NORTH_EAST)
+            if (currentX < relativeSearchSize && directions[x, y] == 0 &&
+                collision.canMove(flags[currentX + 2, y], CollisionFlag.BLOCK_SOUTH_EAST) &&
+                collision.canMove(flags[currentX + 2, currentY + 1], CollisionFlag.BLOCK_NORTH_EAST)
             ) {
                 setAndIncrementWriterBuf(x, y)
                 directions[x, y] = dirFlag
@@ -389,9 +389,9 @@ public class SmartPathFinder(
             x = currentX
             y = currentY - 1
             dirFlag = DirectionFlag.NORTH
-            if (currentY > 0 && directions[x, y] == 0
-                && collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST)
-                && collision.canMove(flags[currentX + 1, y], CollisionFlag.BLOCK_SOUTH_EAST)
+            if (currentY > 0 && directions[x, y] == 0 &&
+                collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST) &&
+                collision.canMove(flags[currentX + 1, y], CollisionFlag.BLOCK_SOUTH_EAST)
             ) {
                 setAndIncrementWriterBuf(x, y)
                 directions[x, y] = dirFlag
@@ -402,9 +402,9 @@ public class SmartPathFinder(
             x = currentX
             y = currentY + 1
             dirFlag = DirectionFlag.SOUTH
-            if (currentY < relativeSearchSize && directions[x, y] == 0
-                && collision.canMove(flags[x, currentY + 2], CollisionFlag.BLOCK_NORTH_WEST)
-                && collision.canMove(flags[currentX + 1, currentY + 2], CollisionFlag.BLOCK_NORTH_EAST)
+            if (currentY < relativeSearchSize && directions[x, y] == 0 &&
+                collision.canMove(flags[x, currentY + 2], CollisionFlag.BLOCK_NORTH_WEST) &&
+                collision.canMove(flags[currentX + 1, currentY + 2], CollisionFlag.BLOCK_NORTH_EAST)
             ) {
                 setAndIncrementWriterBuf(x, y)
                 directions[x, y] = dirFlag
@@ -415,10 +415,10 @@ public class SmartPathFinder(
             x = currentX - 1
             y = currentY - 1
             dirFlag = DirectionFlag.NORTH_EAST
-            if (currentX > 0 && currentY > 0 && directions[x, y] == 0
-                && collision.canMove(flags[x, currentY], CollisionFlag.BLOCK_NORTH_WEST)
-                && collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST)
-                && collision.canMove(flags[currentX, y], CollisionFlag.BLOCK_SOUTH_EAST)
+            if (currentX > 0 && currentY > 0 && directions[x, y] == 0 &&
+                collision.canMove(flags[x, currentY], CollisionFlag.BLOCK_NORTH_WEST) &&
+                collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST) &&
+                collision.canMove(flags[currentX, y], CollisionFlag.BLOCK_SOUTH_EAST)
             ) {
                 setAndIncrementWriterBuf(x, y)
                 directions[x, y] = dirFlag
@@ -429,10 +429,10 @@ public class SmartPathFinder(
             x = currentX + 1
             y = currentY - 1
             dirFlag = DirectionFlag.NORTH_WEST
-            if (currentX < relativeSearchSize && currentY > 0 && directions[x, y] == 0
-                && collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST)
-                && collision.canMove(flags[currentX + 2, y], CollisionFlag.BLOCK_SOUTH_EAST)
-                && collision.canMove(flags[currentX + 2, currentY], CollisionFlag.BLOCK_NORTH_EAST)
+            if (currentX < relativeSearchSize && currentY > 0 && directions[x, y] == 0 &&
+                collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST) &&
+                collision.canMove(flags[currentX + 2, y], CollisionFlag.BLOCK_SOUTH_EAST) &&
+                collision.canMove(flags[currentX + 2, currentY], CollisionFlag.BLOCK_NORTH_EAST)
             ) {
                 setAndIncrementWriterBuf(x, y)
                 directions[x, y] = dirFlag
@@ -443,10 +443,10 @@ public class SmartPathFinder(
             x = currentX - 1
             y = currentY + 1
             dirFlag = DirectionFlag.SOUTH_EAST
-            if (currentX > 0 && currentY < relativeSearchSize && directions[x, y] == 0
-                && collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST)
-                && collision.canMove(flags[x, currentY + 2], CollisionFlag.BLOCK_NORTH_WEST)
-                && collision.canMove(flags[currentX, currentY + 2], CollisionFlag.BLOCK_NORTH_EAST)
+            if (currentX > 0 && currentY < relativeSearchSize && directions[x, y] == 0 &&
+                collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST) &&
+                collision.canMove(flags[x, currentY + 2], CollisionFlag.BLOCK_NORTH_WEST) &&
+                collision.canMove(flags[currentX, currentY + 2], CollisionFlag.BLOCK_NORTH_EAST)
             ) {
                 setAndIncrementWriterBuf(x, y)
                 directions[x, y] = dirFlag
@@ -457,10 +457,10 @@ public class SmartPathFinder(
             x = currentX + 1
             y = currentY + 1
             dirFlag = DirectionFlag.SOUTH_WEST
-            if (currentX < relativeSearchSize && currentY < relativeSearchSize && directions[x, y] == 0
-                && collision.canMove(flags[x, currentY + 2], CollisionFlag.BLOCK_NORTH_WEST)
-                && collision.canMove(flags[currentX + 2, currentY + 2], CollisionFlag.BLOCK_NORTH_EAST)
-                && collision.canMove(flags[currentX + 2, y], CollisionFlag.BLOCK_SOUTH_EAST)
+            if (currentX < relativeSearchSize && currentY < relativeSearchSize && directions[x, y] == 0 &&
+                collision.canMove(flags[x, currentY + 2], CollisionFlag.BLOCK_NORTH_WEST) &&
+                collision.canMove(flags[currentX + 2, currentY + 2], CollisionFlag.BLOCK_NORTH_EAST) &&
+                collision.canMove(flags[currentX + 2, y], CollisionFlag.BLOCK_SOUTH_EAST)
             ) {
                 setAndIncrementWriterBuf(x, y)
                 directions[x, y] = dirFlag
@@ -514,9 +514,9 @@ public class SmartPathFinder(
             x = currentX - 1
             y = currentY
             dirFlag = DirectionFlag.EAST
-            if (currentX > 0 && directions[x, y] == 0
-                && collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST)
-                && collision.canMove(flags[x, currentY + srcSize - 1], CollisionFlag.BLOCK_NORTH_WEST)
+            if (currentX > 0 && directions[x, y] == 0 &&
+                collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST) &&
+                collision.canMove(flags[x, currentY + srcSize - 1], CollisionFlag.BLOCK_NORTH_WEST)
             ) {
                 val clipFlag = CollisionFlag.BLOCK_NORTH_AND_SOUTH_EAST
                 val blocked = (1 until srcSize - 1).any { !collision.canMove(flags[x, currentY + it], clipFlag) }
@@ -531,21 +531,14 @@ public class SmartPathFinder(
             x = currentX + 1
             y = currentY
             dirFlag = DirectionFlag.WEST
-            if (currentX < relativeSearchSize && directions[x, y] == 0
-                && collision.canMove(flags[currentX + srcSize, y], CollisionFlag.BLOCK_SOUTH_EAST)
-                && collision.canMove(
-                    flags[currentX + srcSize, currentY + srcSize - 1],
-                    CollisionFlag.BLOCK_NORTH_EAST
-                )
+            if (currentX < relativeSearchSize && directions[x, y] == 0 &&
+                collision.canMove(flags[currentX + srcSize, y], CollisionFlag.BLOCK_SOUTH_EAST) &&
+                collision.canMove(flags[currentX + srcSize, currentY + srcSize - 1], CollisionFlag.BLOCK_NORTH_EAST)
             ) {
                 val clipFlag = CollisionFlag.BLOCK_NORTH_AND_SOUTH_WEST
-                val blocked =
-                    (1 until srcSize - 1).any {
-                        !collision.canMove(
-                            flags[currentX + srcSize, currentY + it],
-                            clipFlag
-                        )
-                    }
+                val blocked = (1 until srcSize - 1).any {
+                    !collision.canMove(flags[currentX + srcSize, currentY + it], clipFlag)
+                }
                 if (!blocked) {
                     setAndIncrementWriterBuf(x, y)
                     directions[x, y] = dirFlag
@@ -557,9 +550,9 @@ public class SmartPathFinder(
             x = currentX
             y = currentY - 1
             dirFlag = DirectionFlag.NORTH
-            if (currentY > 0 && directions[x, y] == 0
-                && collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST)
-                && collision.canMove(flags[currentX + srcSize - 1, y], CollisionFlag.BLOCK_SOUTH_EAST)
+            if (currentY > 0 && directions[x, y] == 0 &&
+                collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST) &&
+                collision.canMove(flags[currentX + srcSize - 1, y], CollisionFlag.BLOCK_SOUTH_EAST)
             ) {
                 val clipFlag = CollisionFlag.BLOCK_NORTH_EAST_AND_WEST
                 val blocked = (1 until srcSize - 1).any { !collision.canMove(flags[currentX + it, y], clipFlag) }
@@ -574,12 +567,9 @@ public class SmartPathFinder(
             x = currentX
             y = currentY + 1
             dirFlag = DirectionFlag.SOUTH
-            if (currentY < relativeSearchSize && directions[x, y] == 0
-                && collision.canMove(flags[x, currentY + srcSize], CollisionFlag.BLOCK_NORTH_WEST)
-                && collision.canMove(
-                    flags[currentX + srcSize - 1, currentY + srcSize],
-                    CollisionFlag.BLOCK_NORTH_EAST
-                )
+            if (currentY < relativeSearchSize && directions[x, y] == 0 &&
+                collision.canMove(flags[x, currentY + srcSize], CollisionFlag.BLOCK_NORTH_WEST) &&
+                collision.canMove(flags[currentX + srcSize - 1, currentY + srcSize], CollisionFlag.BLOCK_NORTH_EAST)
             ) {
                 val clipFlag = CollisionFlag.BLOCK_SOUTH_EAST_AND_WEST
                 val blocked =
@@ -595,16 +585,16 @@ public class SmartPathFinder(
             x = currentX - 1
             y = currentY - 1
             dirFlag = DirectionFlag.NORTH_EAST
-            if (currentX > 0 && currentY > 0 && directions[x, y] == 0
-                && collision.canMove(flags[x, currentY + srcSize - 2], CollisionFlag.BLOCK_NORTH_WEST)
-                && collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST)
-                && collision.canMove(flags[currentX + srcSize - 2, y], CollisionFlag.BLOCK_SOUTH_EAST)
+            if (currentX > 0 && currentY > 0 && directions[x, y] == 0 &&
+                collision.canMove(flags[x, currentY + srcSize - 2], CollisionFlag.BLOCK_NORTH_WEST) &&
+                collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST) &&
+                collision.canMove(flags[currentX + srcSize - 2, y], CollisionFlag.BLOCK_SOUTH_EAST)
             ) {
                 val clipFlag1 = CollisionFlag.BLOCK_SOUTH_EAST_AND_WEST
                 val clipFlag2 = CollisionFlag.BLOCK_NORTH_EAST_AND_WEST
                 val blocked = (1 until srcSize - 1).any {
-                    !collision.canMove(flags[x, currentY + it - 1], clipFlag1)
-                        || !collision.canMove(flags[currentX + it - 1, y], clipFlag2)
+                    !collision.canMove(flags[x, currentY + it - 1], clipFlag1) ||
+                        !collision.canMove(flags[currentX + it - 1, y], clipFlag2)
                 }
                 if (!blocked) {
                     setAndIncrementWriterBuf(x, y)
@@ -617,19 +607,16 @@ public class SmartPathFinder(
             x = currentX + 1
             y = currentY - 1
             dirFlag = DirectionFlag.NORTH_WEST
-            if (currentX < relativeSearchSize && currentY > 0 && directions[x, y] == 0
-                && collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST)
-                && collision.canMove(flags[currentX + srcSize, y], CollisionFlag.BLOCK_SOUTH_EAST)
-                && collision.canMove(
-                    flags[currentX + srcSize, currentY + srcSize - 2],
-                    CollisionFlag.BLOCK_NORTH_EAST
-                )
+            if (currentX < relativeSearchSize && currentY > 0 && directions[x, y] == 0 &&
+                collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST) &&
+                collision.canMove(flags[currentX + srcSize, y], CollisionFlag.BLOCK_SOUTH_EAST) &&
+                collision.canMove(flags[currentX + srcSize, currentY + srcSize - 2], CollisionFlag.BLOCK_NORTH_EAST)
             ) {
                 val clipFlag1 = CollisionFlag.BLOCK_NORTH_AND_SOUTH_WEST
                 val clipFlag2 = CollisionFlag.BLOCK_NORTH_EAST_AND_WEST
                 val blocked = (1 until srcSize - 1).any {
-                    !collision.canMove(flags[currentX + srcSize, currentY + it - 1], clipFlag1)
-                        || !collision.canMove(flags[currentX + it + 1, y], clipFlag2)
+                    !collision.canMove(flags[currentX + srcSize, currentY + it - 1], clipFlag1) ||
+                        !collision.canMove(flags[currentX + it + 1, y], clipFlag2)
                 }
                 if (!blocked) {
                     setAndIncrementWriterBuf(x, y)
@@ -642,16 +629,16 @@ public class SmartPathFinder(
             x = currentX - 1
             y = currentY + 1
             dirFlag = DirectionFlag.SOUTH_EAST
-            if (currentX > 0 && currentY < relativeSearchSize && directions[x, y] == 0
-                && collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST)
-                && collision.canMove(flags[x, currentY + srcSize], CollisionFlag.BLOCK_NORTH_WEST)
-                && collision.canMove(flags[currentX, currentY + srcSize], CollisionFlag.BLOCK_NORTH_EAST)
+            if (currentX > 0 && currentY < relativeSearchSize && directions[x, y] == 0 &&
+                collision.canMove(flags[x, y], CollisionFlag.BLOCK_SOUTH_WEST) &&
+                collision.canMove(flags[x, currentY + srcSize], CollisionFlag.BLOCK_NORTH_WEST) &&
+                collision.canMove(flags[currentX, currentY + srcSize], CollisionFlag.BLOCK_NORTH_EAST)
             ) {
                 val clipFlag1 = CollisionFlag.BLOCK_NORTH_AND_SOUTH_EAST
                 val clipFlag2 = CollisionFlag.BLOCK_SOUTH_EAST_AND_WEST
                 val blocked = (1 until srcSize - 1).any {
-                    !collision.canMove(flags[x, currentY + it + 1], clipFlag1)
-                        || !collision.canMove(flags[currentX + it - 1, currentY + srcSize], clipFlag2)
+                    !collision.canMove(flags[x, currentY + it + 1], clipFlag1) ||
+                        !collision.canMove(flags[currentX + it - 1, currentY + srcSize], clipFlag2)
                 }
                 if (!blocked) {
                     setAndIncrementWriterBuf(x, y)
@@ -664,16 +651,16 @@ public class SmartPathFinder(
             x = currentX + 1
             y = currentY + 1
             dirFlag = DirectionFlag.SOUTH_WEST
-            if (currentX < relativeSearchSize && currentY < relativeSearchSize && directions[x, y] == 0
-                && collision.canMove(flags[x, currentY + srcSize], CollisionFlag.BLOCK_NORTH_WEST)
-                && collision.canMove(flags[currentX + srcSize, currentY + srcSize], CollisionFlag.BLOCK_NORTH_EAST)
-                && collision.canMove(flags[currentX + srcSize, y], CollisionFlag.BLOCK_SOUTH_EAST)
+            if (currentX < relativeSearchSize && currentY < relativeSearchSize && directions[x, y] == 0 &&
+                collision.canMove(flags[x, currentY + srcSize], CollisionFlag.BLOCK_NORTH_WEST) &&
+                collision.canMove(flags[currentX + srcSize, currentY + srcSize], CollisionFlag.BLOCK_NORTH_EAST) &&
+                collision.canMove(flags[currentX + srcSize, y], CollisionFlag.BLOCK_SOUTH_EAST)
             ) {
                 val clipFlag1 = CollisionFlag.BLOCK_SOUTH_EAST_AND_WEST
                 val clipFlag2 = CollisionFlag.BLOCK_NORTH_AND_SOUTH_WEST
                 val blocked = (1 until srcSize - 1).any {
-                    !collision.canMove(flags[currentX + it + 1, currentY + srcSize], clipFlag1)
-                        || !collision.canMove(flags[currentX + srcSize, currentY + it + 1], clipFlag2)
+                    !collision.canMove(flags[currentX + it + 1, currentY + srcSize], clipFlag1) ||
+                        !collision.canMove(flags[currentX + srcSize, currentY + it + 1], clipFlag2)
                 }
                 if (!blocked) {
                     setAndIncrementWriterBuf(x, y)
@@ -698,9 +685,9 @@ public class SmartPathFinder(
         val radiusY = destY - alternativeRouteRange..destY + alternativeRouteRange
         for (x in radiusX) {
             for (y in radiusY) {
-                if (x !in 0 until searchMapSize
-                    || y !in 0 until searchMapSize
-                    || distances[x, y] >= MAX_ALTERNATIVE_ROUTE_SEEK_RANGE
+                if (x !in 0 until searchMapSize ||
+                    y !in 0 until searchMapSize ||
+                    distances[x, y] >= MAX_ALTERNATIVE_ROUTE_SEEK_RANGE
                 ) {
                     continue
                 }

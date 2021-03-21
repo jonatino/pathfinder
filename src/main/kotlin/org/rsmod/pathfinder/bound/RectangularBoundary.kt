@@ -15,20 +15,20 @@ internal fun reachRectangle(
     destHeight: Int
 ): Boolean = when {
     srcSize > 1 -> {
-        collides(srcX, srcY, destX, destY, srcSize, srcSize, destWidth, destHeight)
-            || reachRectangleN(
-            flags,
-            mapSize,
-            accessBitMask,
-            srcX,
-            srcY,
-            destX,
-            destY,
-            srcSize,
-            srcSize,
-            destWidth,
-            destHeight
-        )
+        collides(srcX, srcY, destX, destY, srcSize, srcSize, destWidth, destHeight) ||
+            reachRectangleN(
+                flags,
+                mapSize,
+                accessBitMask,
+                srcX,
+                srcY,
+                destX,
+                destY,
+                srcSize,
+                srcSize,
+                destWidth,
+                destHeight
+            )
     }
     else -> reachRectangle1(flags, mapSize, accessBitMask, srcX, srcY, destX, destY, destWidth, destHeight)
 }
@@ -65,25 +65,25 @@ private fun reachRectangle1(
     if (srcX in destX..east && srcY >= destY && srcY <= north)
         return true
 
-    if (srcX == destX - 1 && srcY >= destY && srcY <= north
-        && (flag(flags, mapSize, srcX, srcY) and 0x8) == 0
-        && (accessBitMask and 0x8) == 0
+    if (srcX == destX - 1 && srcY >= destY && srcY <= north &&
+        (flag(flags, mapSize, srcX, srcY) and 0x8) == 0 &&
+        (accessBitMask and 0x8) == 0
     ) return true
 
-    if (srcX == east + 1 && srcY >= destY && srcY <= north
-        && (flag(flags, mapSize, srcX, srcY) and 0x80) == 0
-        && (accessBitMask and 0x2) == 0
+    if (srcX == east + 1 && srcY >= destY && srcY <= north &&
+        (flag(flags, mapSize, srcX, srcY) and 0x80) == 0 &&
+        (accessBitMask and 0x2) == 0
     ) return true
 
-    if (srcY + 1 == destY && srcX >= destX && srcX <= east
-        && (flag(flags, mapSize, srcX, srcY) and 0x2) == 0
-        && (accessBitMask and 0x4) == 0
+    if (srcY + 1 == destY && srcX >= destX && srcX <= east &&
+        (flag(flags, mapSize, srcX, srcY) and 0x2) == 0 &&
+        (accessBitMask and 0x4) == 0
 
     ) return true
 
-    return srcY == north + 1 && srcX >= destX && srcX <= east
-        && (flag(flags, mapSize, srcX, srcY) and 0x20) == 0
-        && (accessBitMask and 0x1) == 0
+    return srcY == north + 1 && srcX >= destX && srcX <= east &&
+        (flag(flags, mapSize, srcX, srcY) and 0x20) == 0 &&
+        (accessBitMask and 0x1) == 0
 }
 
 private fun reachRectangleN(

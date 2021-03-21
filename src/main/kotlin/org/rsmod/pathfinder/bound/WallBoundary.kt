@@ -33,41 +33,41 @@ private fun reachWall1(
                 0 -> {
                     if (srcX == destX - 1 && srcY == destY)
                         return true
-                    if (srcX == destX && srcY == destY + 1
-                        && (flag(flags, mapSize, srcX, srcY) and 0x12c0120) == 0
+                    if (srcX == destX && srcY == destY + 1 &&
+                        (flag(flags, mapSize, srcX, srcY) and 0x12c0120) == 0
                     ) return true
-                    if (srcX == destX && srcY == destY - 1
-                        && (flag(flags, mapSize, srcX, srcY) and 0x12c0102) == 0
+                    if (srcX == destX && srcY == destY - 1 &&
+                        (flag(flags, mapSize, srcX, srcY) and 0x12c0102) == 0
                     ) return true
                 }
                 1 -> {
                     if (srcX == destX && srcY == destY + 1)
                         return true
-                    if (srcX == destX - 1 && srcY == destY
-                        && (flag(flags, mapSize, srcX, srcY) and 0x12c0108) == 0
+                    if (srcX == destX - 1 && srcY == destY &&
+                        (flag(flags, mapSize, srcX, srcY) and 0x12c0108) == 0
                     ) return true
-                    if (srcX == destX + 1 && srcY == destY
-                        && (flag(flags, mapSize, srcX, srcY) and 0x12c0180) == 0
+                    if (srcX == destX + 1 && srcY == destY &&
+                        (flag(flags, mapSize, srcX, srcY) and 0x12c0180) == 0
                     ) return true
                 }
                 2 -> {
                     if (srcX == destX + 1 && srcY == destY)
                         return true
-                    if (srcX == destX && srcY == destY + 1
-                        && (flag(flags, mapSize, srcX, srcY) and 0x12c0120) == 0
+                    if (srcX == destX && srcY == destY + 1 &&
+                        (flag(flags, mapSize, srcX, srcY) and 0x12c0120) == 0
                     ) return true
-                    if (srcX == destX && srcY == destY - 1
-                        && (flag(flags, mapSize, srcX, srcY) and 0x12c0102) == 0
+                    if (srcX == destX && srcY == destY - 1 &&
+                        (flag(flags, mapSize, srcX, srcY) and 0x12c0102) == 0
                     ) return true
                 }
                 3 -> {
                     if (srcX == destX && srcY == destY - 1)
                         return true
-                    if (srcX == destX - 1 && srcY == destY
-                        && (flag(flags, mapSize, srcX, srcY) and 0x12c0108) == 0
+                    if (srcX == destX - 1 && srcY == destY &&
+                        (flag(flags, mapSize, srcX, srcY) and 0x12c0108) == 0
                     ) return true
-                    if (srcX == destX + 1 && srcY == destY
-                        && (flag(flags, mapSize, srcX, srcY) and 0x12c0180) == 0
+                    if (srcX == destX + 1 && srcY == destY &&
+                        (flag(flags, mapSize, srcX, srcY) and 0x12c0180) == 0
                     ) return true
                 }
             }
@@ -79,31 +79,31 @@ private fun reachWall1(
                         return true
                     if (srcX == destX && srcY == destY + 1)
                         return true
-                    if (srcX == destX + 1 && srcY == destY
-                        && (flag(flags, mapSize, srcX, srcY) and 0x12c0180) == 0
+                    if (srcX == destX + 1 && srcY == destY &&
+                        (flag(flags, mapSize, srcX, srcY) and 0x12c0180) == 0
                     ) return true
-                    if (srcX == destX && srcY == destY - 1
-                        && (flag(flags, mapSize, srcX, srcY) and 0x12c0102) == 0
+                    if (srcX == destX && srcY == destY - 1 &&
+                        (flag(flags, mapSize, srcX, srcY) and 0x12c0102) == 0
                     ) return true
                 }
                 1 -> {
-                    if (srcX == destX - 1 && srcY == destY
-                        && (flag(flags, mapSize, srcX, srcY) and 0x12c0108) == 0
+                    if (srcX == destX - 1 && srcY == destY &&
+                        (flag(flags, mapSize, srcX, srcY) and 0x12c0108) == 0
                     ) return true
                     if (srcX == destX && srcY == destY + 1)
                         return true
                     if (srcX == destX + 1 && srcY == destY)
                         return true
-                    if (srcX == destX && srcY == destY - 1
-                        && (flag(flags, mapSize, srcX, srcY) and 0x12c0102) == 0
+                    if (srcX == destX && srcY == destY - 1 &&
+                        (flag(flags, mapSize, srcX, srcY) and 0x12c0102) == 0
                     ) return true
                 }
                 2 -> {
-                    if (srcX == destX - 1 && srcY == destY
-                        && (flag(flags, mapSize, srcX, srcY) and 0x12c0108) == 0
+                    if (srcX == destX - 1 && srcY == destY &&
+                        (flag(flags, mapSize, srcX, srcY) and 0x12c0108) == 0
                     ) return true
-                    if (srcX == destX && srcY == destY + 1
-                        && (flag(flags, mapSize, srcX, srcY) and 0x12c0120) == 0
+                    if (srcX == destX && srcY == destY + 1 &&
+                        (flag(flags, mapSize, srcX, srcY) and 0x12c0120) == 0
                     ) return true
                     if (srcX == destX + 1 && srcY == destY)
                         return true
@@ -113,11 +113,11 @@ private fun reachWall1(
                 3 -> {
                     if (srcX == destX - 1 && srcY == destY)
                         return true
-                    if (srcX == destX && srcY == destY + 1
-                        && (flag(flags, mapSize, srcX, srcY) and 0x12c0120) == 0
+                    if (srcX == destX && srcY == destY + 1 &&
+                        (flag(flags, mapSize, srcX, srcY) and 0x12c0120) == 0
                     ) return true
-                    if (srcX == destX + 1 && srcY == destY
-                        && (flag(flags, mapSize, srcX, srcY) and 0x12c0180) == 0
+                    if (srcX == destX + 1 && srcY == destY &&
+                        (flag(flags, mapSize, srcX, srcY) and 0x12c0180) == 0
                     ) return true
                     if (srcX == destX && srcY == destY - 1)
                         return true
@@ -125,18 +125,18 @@ private fun reachWall1(
             }
         }
         9 -> {
-            if (srcX == destX && srcY == destY + 1
-                && (flag(flags, mapSize, srcX, srcY) and 0x20) == 0
+            if (srcX == destX && srcY == destY + 1 &&
+                (flag(flags, mapSize, srcX, srcY) and 0x20) == 0
             ) return true
-            if (srcX == destX && srcY == destY - 1
-                && (flag(flags, mapSize, srcX, srcY) and 0x2) == 0
+            if (srcX == destX && srcY == destY - 1 &&
+                (flag(flags, mapSize, srcX, srcY) and 0x2) == 0
             ) return true
-            if (srcX == destX - 1 && srcY == destY
-                && (flag(flags, mapSize, srcX, srcY) and 0x8) == 0
+            if (srcX == destX - 1 && srcY == destY &&
+                (flag(flags, mapSize, srcX, srcY) and 0x8) == 0
             ) return true
 
-            return srcX == destX + 1 && srcY == destY
-                && (flag(flags, mapSize, srcX, srcY) and 0x80) == 0
+            return srcX == destX + 1 && srcY == destY &&
+                (flag(flags, mapSize, srcX, srcY) and 0x80) == 0
         }
     }
     return false
@@ -161,41 +161,41 @@ private fun reachWallN(
                 0 -> {
                     if (srcX == destX - srcSize && srcY <= destY && north >= destY)
                         return true
-                    if (destX in srcX..east && srcY == destY + 1
-                        && (flag(flags, mapSize, destX, srcY) and 0x12c0120) == 0
+                    if (destX in srcX..east && srcY == destY + 1 &&
+                        (flag(flags, mapSize, destX, srcY) and 0x12c0120) == 0
                     ) return true
-                    if (destX in srcX..east && srcY == destY - srcSize
-                        && (flag(flags, mapSize, destX, north) and 0x12c0102) == 0
+                    if (destX in srcX..east && srcY == destY - srcSize &&
+                        (flag(flags, mapSize, destX, north) and 0x12c0102) == 0
                     ) return true
                 }
                 1 -> {
                     if (destX in srcX..east && srcY == destY + 1)
                         return true
-                    if (srcX == destX - srcSize && srcY <= destY && north >= destY
-                        && (flag(flags, mapSize, east, destY) and 0x12c0108) == 0
+                    if (srcX == destX - srcSize && srcY <= destY && north >= destY &&
+                        (flag(flags, mapSize, east, destY) and 0x12c0108) == 0
                     ) return true
-                    if (srcX == destX + 1 && srcY <= destY && north >= destY
-                        && (flag(flags, mapSize, srcX, destY) and 0x12c0180) == 0
+                    if (srcX == destX + 1 && srcY <= destY && north >= destY &&
+                        (flag(flags, mapSize, srcX, destY) and 0x12c0180) == 0
                     ) return true
                 }
                 2 -> {
                     if (srcX == destX + 1 && srcY <= destY && north >= destY)
                         return true
-                    if (destX in srcX..east && srcY == destY + 1
-                        && (flag(flags, mapSize, destX, srcY) and 0x12c0120) == 0
+                    if (destX in srcX..east && srcY == destY + 1 &&
+                        (flag(flags, mapSize, destX, srcY) and 0x12c0120) == 0
                     ) return true
-                    if (destX in srcX..east && srcY == destY - srcSize
-                        && (flag(flags, mapSize, destX, north) and 0x12c0102) == 0
+                    if (destX in srcX..east && srcY == destY - srcSize &&
+                        (flag(flags, mapSize, destX, north) and 0x12c0102) == 0
                     ) return true
                 }
                 3 -> {
                     if (destX in srcX..east && srcY == destY - srcSize)
                         return true
-                    if (srcX == destX - srcSize && srcY <= destY && north >= destY
-                        && (flag(flags, mapSize, east, destY) and 0x12c0108) == 0
+                    if (srcX == destX - srcSize && srcY <= destY && north >= destY &&
+                        (flag(flags, mapSize, east, destY) and 0x12c0108) == 0
                     ) return true
-                    if (srcX == destX + 1 && srcY <= destY && north >= destY
-                        && (flag(flags, mapSize, srcX, destY) and 0x12c0180) == 0
+                    if (srcX == destX + 1 && srcY <= destY && north >= destY &&
+                        (flag(flags, mapSize, srcX, destY) and 0x12c0180) == 0
                     ) return true
                 }
             }
@@ -207,31 +207,31 @@ private fun reachWallN(
                         return true
                     if (destX in srcX..east && srcY == destY + 1)
                         return true
-                    if (srcX == destX + 1 && srcY <= destY && north >= destY
-                        && (flag(flags, mapSize, srcX, destY) and 0x12c0180) == 0
+                    if (srcX == destX + 1 && srcY <= destY && north >= destY &&
+                        (flag(flags, mapSize, srcX, destY) and 0x12c0180) == 0
                     ) return true
-                    if (destX in srcX..east && srcY == destY - srcSize
-                        && (flag(flags, mapSize, destX, north) and 0x12c0102) == 0
+                    if (destX in srcX..east && srcY == destY - srcSize &&
+                        (flag(flags, mapSize, destX, north) and 0x12c0102) == 0
                     ) return true
                 }
                 1 -> {
-                    if (srcX == destX - srcSize && srcY <= destY && north >= destY
-                        && (flag(flags, mapSize, east, destY) and 0x12c0108) == 0
+                    if (srcX == destX - srcSize && srcY <= destY && north >= destY &&
+                        (flag(flags, mapSize, east, destY) and 0x12c0108) == 0
                     ) return true
                     if (destX in srcX..east && srcY == destY + 1)
                         return true
                     if (srcX == destX + 1 && srcY <= destY && north >= destY)
                         return true
-                    if (destX in srcX..east && srcY == destY - srcSize
-                        && (flag(flags, mapSize, destX, north) and 0x12c0102) == 0
+                    if (destX in srcX..east && srcY == destY - srcSize &&
+                        (flag(flags, mapSize, destX, north) and 0x12c0102) == 0
                     ) return true
                 }
                 2 -> {
-                    if (srcX == destX - srcSize && srcY <= destY && north >= destY
-                        && (flag(flags, mapSize, east, destY) and 0x12c0108) == 0
+                    if (srcX == destX - srcSize && srcY <= destY && north >= destY &&
+                        (flag(flags, mapSize, east, destY) and 0x12c0108) == 0
                     ) return true
-                    if (destX in srcX..east && srcY == destY + 1
-                        && (flag(flags, mapSize, destX, srcY) and 0x12c0120) == 0
+                    if (destX in srcX..east && srcY == destY + 1 &&
+                        (flag(flags, mapSize, destX, srcY) and 0x12c0120) == 0
                     ) return true
                     if (srcX == destX + 1 && srcY <= destY && north >= destY)
                         return true
@@ -241,11 +241,11 @@ private fun reachWallN(
                 3 -> {
                     if (srcX == destX - srcSize && srcY <= destY && north >= destY)
                         return true
-                    if (destX in srcX..east && srcY == destY + 1
-                        && (flag(flags, mapSize, destX, srcY) and 0x12c0120) == 0
+                    if (destX in srcX..east && srcY == destY + 1 &&
+                        (flag(flags, mapSize, destX, srcY) and 0x12c0120) == 0
                     ) return true
-                    if (srcX == destX + 1 && srcY <= destY && north >= destY
-                        && (flag(flags, mapSize, srcX, destY) and 0x12c0180) == 0
+                    if (srcX == destX + 1 && srcY <= destY && north >= destY &&
+                        (flag(flags, mapSize, srcX, destY) and 0x12c0180) == 0
                     ) return true
                     if (destX in srcX..east && srcY == destY - srcSize)
                         return true
@@ -253,18 +253,18 @@ private fun reachWallN(
             }
         }
         9 -> {
-            if (destX in srcX..east && srcY == destY + 1
-                && (flag(flags, mapSize, destX, srcY) and 0x12c0120) == 0
+            if (destX in srcX..east && srcY == destY + 1 &&
+                (flag(flags, mapSize, destX, srcY) and 0x12c0120) == 0
             ) return true
-            if (destX in srcX..east && srcY == destY - srcSize
-                && (flag(flags, mapSize, destX, north) and 0x12c0102) == 0
+            if (destX in srcX..east && srcY == destY - srcSize &&
+                (flag(flags, mapSize, destX, north) and 0x12c0102) == 0
             ) return true
-            if (srcX == destX - srcSize && srcY <= destY && north >= destY
-                && (flag(flags, mapSize, east, destY) and 0x12c0108) == 0
+            if (srcX == destX - srcSize && srcY <= destY && north >= destY &&
+                (flag(flags, mapSize, east, destY) and 0x12c0108) == 0
             ) return true
 
-            return srcX == destX + 1 && srcY <= destY && north >= destY
-                && (flag(flags, mapSize, srcX, destY) and 0x12c0180) == 0
+            return srcX == destX + 1 && srcY <= destY && north >= destY &&
+                (flag(flags, mapSize, srcX, destY) and 0x12c0180) == 0
         }
     }
     return false
