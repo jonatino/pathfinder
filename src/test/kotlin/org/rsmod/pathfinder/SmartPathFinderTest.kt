@@ -14,6 +14,7 @@ import org.rsmod.pathfinder.flag.CollisionFlag
 import java.util.stream.Stream
 
 private const val RECT_OBJ_SHAPE = 10
+private val globalPf = SmartPathFinder(resetOnSearch = true)
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 class SmartPathFinderTest {
@@ -85,9 +86,17 @@ class SmartPathFinderTest {
 
     @ParameterizedTest
     @ArgumentsSource(ParameterFileNameProvider::class)
-    fun reachDestination(resourceFile: String) {
+    fun reachDestinationGlobalPathFinder(resourceFile: String) {
         val params = loadParameters(resourceFile)
-        val pf = SmartPathFinder(resetOnSearch = false)
+        val route = globalPf.findPath(params.flags, params.srcX, params.srcY, params.destX, params.destY)
+        Assertions.assertEquals(params.expectedX, route.last().x)
+        Assertions.assertEquals(params.expectedY, route.last().y)
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(ParameterFileNameProvider::class)
+    fun reachDestinationIndependentPathFinder(resourceFile: String) {
+        val params = loadParameters(resourceFile)
         val route = pf.findPath(params.flags, params.srcX, params.srcY, params.destX, params.destY)
         Assertions.assertEquals(params.expectedX, route.last().x)
         Assertions.assertEquals(params.expectedY, route.last().y)
