@@ -28,6 +28,7 @@ import org.rsmod.pathfinder.flag.CollisionFlag.WALL_SOUTH_PROJECTILE_BLOCKER
 import org.rsmod.pathfinder.flag.CollisionFlag.WALL_WEST_PROJECTILE_BLOCKER
 import kotlin.math.abs
 
+/* original RuneLite code revised by Scu11 */
 @Suppress("MemberVisibilityCanBePrivate")
 public class ProjectileValidator(public val searchMapSize: Int) {
 
