@@ -5,7 +5,6 @@ import org.rsmod.pathfinder.collision.CollisionStrategies
 import org.rsmod.pathfinder.collision.CollisionStrategy
 import org.rsmod.pathfinder.flag.CollisionFlag
 
-@Suppress("MemberVisibilityCanBePrivate")
 public class DumbPathFinder(public val searchMapSize: Int = DEFAULT_SEARCH_MAP_SIZE) {
 
     public fun findPath(

@@ -19,6 +19,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+@file:Suppress("MemberVisibilityCanBePrivate")
+
 package org.rsmod.pathfinder
 
 import org.rsmod.pathfinder.flag.CollisionFlag.OBJECT_PROJECTILE_BLOCKER
@@ -29,8 +31,7 @@ import org.rsmod.pathfinder.flag.CollisionFlag.WALL_WEST_PROJECTILE_BLOCKER
 import kotlin.math.abs
 
 /* original RuneLite code revised by Scu11 */
-@Suppress("MemberVisibilityCanBePrivate")
-public class ProjectileValidator(public val searchMapSize: Int) {
+public class ProjectileValidator(public val searchMapSize: Int = DEFAULT_SEARCH_MAP_SIZE) {
 
     public fun isValid(
         flags: IntArray,
