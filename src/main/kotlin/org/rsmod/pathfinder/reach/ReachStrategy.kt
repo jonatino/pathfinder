@@ -16,5 +16,4 @@ public interface ReachStrategy {
         accessBitMask: Int,
         searchMapSize: Int
     ): Boolean
-
 }

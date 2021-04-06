@@ -28,8 +28,6 @@ private const val MAX_ALTERNATIVE_ROUTE_DISTANCE_FROM_DESTINATION = 10
  */
 private val TURN_COORDS = RouteCoordinates(0)
 
-private val EMPTY_LIST = emptyList<RouteCoordinates>()
-
 public class SmartPathFinder(
     private val resetOnSearch: Boolean = DEFAULT_RESET_ON_SEARCH,
     public val searchMapSize: Int = DEFAULT_SEARCH_MAP_SIZE,
@@ -117,9 +115,9 @@ public class SmartPathFinder(
         }
         if (!pathFound) {
             if (!moveNear) {
-                return Route(EMPTY_LIST, alternative = false, success = false)
+                return Route(emptyList(), alternative = false, success = false)
             } else if (!findClosestApproachPoint(localSrcX, localSrcY, localDestX, localDestY)) {
-                return Route(EMPTY_LIST, alternative = false, success = false)
+                return Route(emptyList(), alternative = false, success = false)
             }
         }
         val coordinates = ArrayList<RouteCoordinates>(255)
@@ -682,5 +680,4 @@ public class SmartPathFinder(
         val index = (y * searchMapSize) + x
         return this[index]
     }
-
 }
